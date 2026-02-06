@@ -133,40 +133,47 @@
             ]
         };
 
-        function checkPass() {
-            const input = document.getElementById('pass-input').value;
-            if(input === PASS_CORRECTA) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-content').classList.remove('hidden-content');
-                showDay(2); // Mostrar el día 2 por defecto
-            } else {
-                document.getElementById('error-msg').classList.remove('hidden');
-            }
+        onst PASS_CORRECTA = "Brighton2026"; // Esta es tu contraseña actual
+
+    function checkPass() {
+        const input = document.getElementById('pass-input').value;
+        const errorMsg = document.getElementById('error-msg');
+        
+        if(input === PASS_CORRECTA) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden-content');
+            showDay(2); // Al entrar, mostramos el día 2 que es el que tiene fotos
+        } else {
+            errorMsg.classList.remove('hidden');
+        }
+    }
+
+    function showDay(dia) {
+        const container = document.getElementById('gallery');
+        container.innerHTML = '';
+        
+        if(!fotos[dia] || fotos[dia].length === 0) {
+            container.innerHTML = '<p class="text-center col-span-full text-gray-500">Aún no hay fotos para este día.</p>';
+            return;
         }
 
-        function showDay(dia) {
-            const container = document.getElementById('gallery');
-            container.innerHTML = '';
-            
-            if(!fotos[dia]) return;
+        fotos[dia].forEach(url => {
+            const div = document.createElement('div');
+            div.className = 'relative overflow-hidden rounded-lg shadow-lg bg-white group h-64';
+            div.innerHTML = `
+                <div class="photo-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index:10; background: rgba(0,0,0,0);"></div>
+                <img src="${url}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500" loading="lazy">
+            `;
+            container.appendChild(div);
+        });
+    }
 
-            fotos[dia].forEach(url => {
-                const div = document.createElement('div');
-                div.className = 'relative overflow-hidden rounded-lg shadow-lg bg-white group';
-                div.innerHTML = `
-                    <div class="photo-overlay"></div>
-                    <img src="${url}" class="w-full h-64 object-cover transform group-hover:scale-105 transition duration-500">
-                `;
-                container.appendChild(div);
-            });
+    // Bloqueo de teclado para evitar guardar (Ctrl+S, Ctrl+U)
+    document.onkeydown = function(e) {
+        if (e.ctrlKey && (e.keyCode === 83 || e.keyCode === 85)) {
+            return false;
         }
-
-        // Bloquear atajos de teclado (Ctrl+S, Ctrl+U)
-        document.onkeydown = function(e) {
-            if (e.ctrlKey && (e.keyCode === 83 || e.keyCode === 85)) {
-                return false;
-            }
-        };
+    };
     </script>
 </body>
 </html>
