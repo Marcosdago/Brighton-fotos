@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inmersión Lingüística - Brighton</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Capa invisible para evitar arrastrar/guardar */
+        .photo-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0);
+            z-index: 10;
+        }
+        img { user-select: none; -webkit-user-drag: none; }
+        .hidden-content { display: none; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans" oncontextmenu="return false;">
+
+    <div id="login-screen" class="fixed inset-0 bg-blue-900 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center">
+            <h1 class="text-2xl font-bold mb-4 text-gray-800">Acceso Privado - Brighton</h1>
+            <input type="password" id="pass-input" placeholder="Introduce el código" class="border p-2 rounded w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button onclick="checkPass()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Entrar</button>
+            <p id="error-msg" class="text-red-500 mt-2 hidden">Código incorrecto</p>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden-content container mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-blue-800">Inmersión en Brighton</h1>
+            <p class="text-gray-600">Galería privada de fotos</p>
+        </header>
+
+        <nav class="flex justify-center space-x-4 mb-8">
+            <button onclick="showDay(1)" class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50">Día 1</button>
+            <button onclick="showDay(2)" class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50">Día 2</button>
+            </nav>
+
+        <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+    </div>
+
+    <script>
+        const PASS_CORRECTA = "Brighton2026"; // <--- CAMBIA TU CONTRASEÑA AQUÍ
+
+        // Datos de las fotos (Aquí pegarás los enlaces que saques del blog)
+        const fotos = {
+            1: [
+                "https://link-a-tu-foto-dia1-01.jpg",
+                "https://link-a-tu-foto-dia1-02.jpg"
+            ],
+            2: [
+                "https://blogger.googleusercontent.com/img/b/R29uZ2xl/AVvXsEj7...", // Enlace del Day 2
+                "https://blogger.googleusercontent.com/img/b/R29uZ2xl/AVvXsEiO..."
+            ]
+        };
+
+        function checkPass() {
+            const input = document.getElementById('pass-input').value;
+            if(input === PASS_CORRECTA) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden-content');
+                showDay(2); // Mostrar el día 2 por defecto
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+            }
+        }
+
+        function showDay(dia) {
+            const container = document.getElementById('gallery');
+            container.innerHTML = '';
+            
+            if(!fotos[dia]) return;
+
+            fotos[dia].forEach(url => {
+                const div = document.createElement('div');
+                div.className = 'relative overflow-hidden rounded-lg shadow-lg bg-white group';
+                div.innerHTML = `
+                    <div class="photo-overlay"></div>
+                    <img src="${url}" class="w-full h-64 object-cover transform group-hover:scale-105 transition duration-500">
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Bloquear atajos de teclado (Ctrl+S, Ctrl+U)
+        document.onkeydown = function(e) {
+            if (e.ctrlKey && (e.keyCode === 83 || e.keyCode === 85)) {
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>
