@@ -4,183 +4,150 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brighton 24 | Galería Premium</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        
-        :root { --accent: #3b82f6; }
-        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        /* Optimizaciones de Cristalografía */
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        
-        /* Animaciones de entrada */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease forwards; }
-
-        /* Grid Mejorado */
-        .foto-item { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 1/1; cursor: pointer; }
-        .foto-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        .foto-item:hover img { transform: scale(1.1); }
-        
-        /* Skeleton Loader para fluidez */
-        .skeleton { background: linear-gradient(90deg, #0f172a 25%, #1e293b 50%, #0f172a 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
-        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
+        body { background: #020617; color: white; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .foto-card { aspect-ratio: 1/1; border-radius: 24px; overflow: hidden; cursor: pointer; position: relative; }
+        .foto-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s transform; }
+        .foto-card:hover img { transform: scale(1.1); }
+        .skeleton { background: linear-gradient(90deg, #0f172a 25%, #1e293b 50%, #0f172a 75%); background-size: 200% 100%; animation: load 1.5s infinite; }
+        @keyframes load { from { background-position: 150% 0; } to { background-position: -150% 0; } }
+        .hidden { display: none !important; }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body>
 
-    <div id="lightbox" class="fixed inset-0 z-[200] bg-black/95 hidden flex-col items-center justify-center p-4" onclick="closeLightbox()">
-        <button class="absolute top-6 right-6 text-white text-4xl">&times;</button>
-        <img id="imgFull" class="max-w-full max-h-[85vh] rounded-lg shadow-2xl">
-        <p id="captionFull" class="mt-4 text-slate-400 font-medium italic"></p>
-    </div>
-
-    <div id="login" class="fixed inset-0 flex items-center justify-center z-[150] bg-slate-950">
-        <div class="glass p-10 rounded-[40px] text-center w-full max-w-sm fade-in">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <span class="text-2xl">📸</span>
-            </div>
-            <h2 class="text-2xl font-extrabold mb-2 tracking-tight">BRIGHTON '24</h2>
-            <p class="text-slate-500 text-sm mb-8">Introduce el código de acceso</p>
-            <input type="password" id="pw" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-4 text-center outline-none focus:ring-2 focus:ring-blue-500 transition-all text-white" placeholder="••••••••">
-            <button onclick="acceder()" class="w-full bg-blue-600 py-4 rounded-2xl font-bold hover:bg-blue-500 shadow-xl transition-all active:scale-95">ACCEDER</button>
-        </div>
-    </div>
-
-    <main id="mainApp" class="hidden opacity-0 transition-opacity duration-700">
+<div id="loginSection" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950 p-6">
+    <div class="glass p-12 rounded-[50px] text-center max-w-sm w-full shadow-2xl">
+        <h2 class="text-3xl font-black italic tracking-tighter text-blue-500 mb-2 uppercase">Brighton '24</h2>
+        <p class="text-slate-500 text-sm mb-10">Acceso exclusivo para invitados</p>
         
-        <header class="container mx-auto px-6 pt-16 pb-12 text-center">
-            <h1 class="text-5xl md:text-7xl font-black italic tracking-tighter mb-6 bg-gradient-to-r from-white via-blue-400 to-slate-500 bg-clip-text text-transparent">GALERÍA OFICIAL</h1>
-            <div class="max-w-2xl mx-auto relative group">
-                <input type="text" id="busGlobal" oninput="debounceSearch()" 
-                       class="glass w-full py-5 px-8 rounded-full text-center text-lg outline-none focus:ring-2 focus:ring-blue-500 shadow-2xl transition-all" 
-                       placeholder="Buscar por etiqueta o día...">
-                <span class="absolute left-6 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-100 transition-opacity">🔍</span>
-            </div>
-        </header>
+        <button onclick="login()" class="flex items-center justify-center gap-4 w-full bg-white text-black py-4 rounded-2xl font-bold hover:bg-slate-200 transition-all active:scale-95 shadow-xl">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5">
+            Entrar con Google
+        </button>
+    </div>
+</div>
 
-        <section id="seccionDias" class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-            </section>
+<main id="appContent" class="hidden opacity-0 transition-opacity duration-1000">
+    <header class="container mx-auto px-6 py-16 text-center">
+        <div class="flex justify-center mb-6">
+            <img id="userImg" class="w-12 h-12 rounded-full border-2 border-blue-500 p-1">
+        </div>
+        <h1 class="text-6xl md:text-8xl font-black italic tracking-tighter bg-gradient-to-b from-white to-slate-600 bg-clip-text text-transparent">GALERÍA</h1>
+        
+        <div class="max-w-xl mx-auto mt-10">
+            <input type="text" id="searchInput" oninput="handleSearch()" class="glass w-full p-6 rounded-3xl text-center text-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="🔍 Buscar momento o día...">
+        </div>
+    </header>
 
-        <section id="vistaDetalle" class="hidden container mx-auto px-6 pb-20">
-            <div class="flex items-center justify-between mb-10">
-                <button onclick="volverHome()" class="flex items-center gap-2 text-blue-400 font-bold hover:gap-4 transition-all uppercase tracking-widest text-sm">
-                    <span>←</span> Volver
-                </button>
-                <h2 id="tituloDia" class="text-4xl font-black italic uppercase"></h2>
-            </div>
-            <div id="gridFotos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-        </section>
-    </main>
+    <section id="daysGrid" class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 pb-20"></section>
+
+    <section id="detailGrid" class="hidden container mx-auto px-6 pb-20">
+        <button onclick="goHome()" class="mb-10 text-blue-500 font-bold hover:gap-4 flex items-center gap-2 transition-all">← VOLVER</button>
+        <h2 id="dayTitle" class="text-5xl font-black italic mb-12 uppercase tracking-tighter text-blue-500"></h2>
+        <div id="photosContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </section>
+</main>
+
+<div id="lightbox" class="fixed inset-0 bg-black/95 z-[200] hidden flex-col items-center justify-center p-4" onclick="closeLightbox()">
+    <img id="fullImg" class="max-w-full max-h-[85vh] rounded-xl shadow-2xl border border-white/10">
+    <p id="fullTag" class="mt-6 text-slate-400 italic font-medium"></p>
+</div>
 
 <script>
-    // Configuración y Datos (Normalmente vendría de una API)
-    const CONFIG = { password: "123", days: [1, 2, 3] };
+// 1. CONFIGURACIÓN FIREBASE (REEMPLAZA ESTO)
+const firebaseConfig = {
+  apiKey: "TU_API_KEY_AQUI",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  projectId: "TU_PROYECTO_ID",
+  appId: "TU_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// 2. TUS DATOS (TODAS LAS FOTOS)
+const fotos = [
+    // Copia aquí el array completo que tienes con el día 1, 2 y 3
+    {u:"URL_AQUÍ", n:"etiqueta", d:"1"}, 
+    // ... todas tus fotos
+];
+
+// 3. LÓGICA DE SEGURIDAD Y UX
+function login() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then((result) => {
+        setupApp(result.user);
+    }).catch(err => alert("Error al conectar: " + err.message));
+}
+
+function setupApp(user) {
+    document.getElementById('loginSection').classList.add('hidden');
+    const main = document.getElementById('appContent');
+    main.classList.remove('hidden');
+    setTimeout(() => main.style.opacity = "1", 50);
     
-    // Aquí podrías usar el array 'fotos' original. He optimizado la estructura.
-    const fotos = [
-        {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s320/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg", n:"grupo principal", d:"1"},
-        // ... (resto de tus fotos aquí)
-    ];
+    document.getElementById('userImg').src = user.photoURL;
+    renderHome();
+}
 
-    // --- Lógica de Negocio ---
-
-    function acceder() {
-        const pass = document.getElementById('pw').value;
-        if(pass === CONFIG.password) {
-            document.getElementById('login').classList.add('hidden');
-            const main = document.getElementById('mainApp');
-            main.classList.remove('hidden');
-            setTimeout(() => main.classList.replace('opacity-0', 'opacity-100'), 50);
-            renderDays();
-        } else {
-            alert("Contraseña incorrecta");
-        }
-    }
-
-    function renderDays() {
-        const container = document.getElementById('seccionDias');
-        container.innerHTML = CONFIG.days.map(d => `
-            <div onclick="verDia('${d}')" class="day-card glass h-80 rounded-[35px] relative overflow-hidden group cursor-pointer fade-in">
-                <img src="${fotos.find(f => f.d == d)?.u}" class="w-full h-full object-cover opacity-40 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent flex items-end p-8">
-                    <div>
-                        <p class="text-blue-400 font-bold text-sm tracking-widest mb-1">MEMORIAS</p>
-                        <h3 class="text-4xl font-black italic">DÍA 0${d}</h3>
-                    </div>
+function renderHome() {
+    const container = document.getElementById('daysGrid');
+    const dias = ["1", "2", "3"]; // Tus días
+    
+    container.innerHTML = dias.map(d => {
+        const portada = fotos.find(f => f.d == d)?.u;
+        return `
+            <div onclick="showDay('${d}')" class="foto-card glass group">
+                <img src="${portada}" class="opacity-40 group-hover:opacity-80">
+                <div class="absolute inset-0 flex items-end p-8">
+                    <h3 class="text-4xl font-black italic">DÍA 0${d}</h3>
                 </div>
             </div>
-        `).join('');
-    }
+        `;
+    }).join('');
+}
 
-    function verDia(dia) {
-        document.getElementById('seccionDias').classList.add('hidden');
-        document.getElementById('vistaDetalle').classList.remove('hidden');
-        document.getElementById('tituloDia').innerText = `DÍA ${dia.padStart(2, '0')}`;
-        
-        const grid = document.getElementById('gridFotos');
-        const filtradas = fotos.filter(f => f.d == dia);
-        
-        grid.innerHTML = filtradas.map(f => `
-            <div class="foto-item skeleton fade-in" onclick="openLightbox('${f.u}', '${f.n}')">
-                <img src="${f.u}" loading="lazy" onload="this.parentElement.classList.remove('skeleton')">
-                <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span class="text-xs font-bold tracking-tighter uppercase">${f.n}</span>
-                </div>
-            </div>
-        `).join('');
-    }
+function showDay(d) {
+    document.getElementById('daysGrid').classList.add('hidden');
+    document.getElementById('detailGrid').classList.remove('hidden');
+    document.getElementById('dayTitle').innerText = `Día ${d.padStart(2,'0')}`;
+    
+    const container = document.getElementById('photosContainer');
+    const filtradas = fotos.filter(f => f.d == d);
+    
+    container.innerHTML = filtradas.map(f => `
+        <div class="foto-card skeleton" onclick="openLightbox('${f.u}', '${f.n}')">
+            <img src="${f.u}" loading="lazy" onload="this.parentElement.classList.remove('skeleton')">
+        </div>
+    `).join('');
+}
 
-    // Buscador con Debounce (para evitar lag al escribir)
-    let timeoutBusqueda;
-    function debounceSearch() {
-        clearTimeout(timeoutBusqueda);
-        timeoutBusqueda = setTimeout(() => {
-            const query = document.getElementById('busGlobal').value.toLowerCase();
-            if(!query) {
-                volverHome();
-                return;
-            }
-            const resultados = fotos.filter(f => f.n.toLowerCase().includes(query) || f.d.includes(query));
-            mostrarResultados(resultados);
-        }, 300);
-    }
+function goHome() {
+    document.getElementById('daysGrid').classList.remove('hidden');
+    document.getElementById('detailGrid').classList.add('hidden');
+}
 
-    function mostrarResultados(res) {
-        document.getElementById('seccionDias').classList.add('hidden');
-        document.getElementById('vistaDetalle').classList.remove('hidden');
-        document.getElementById('tituloDia').innerText = "Resultados";
-        const grid = document.getElementById('gridFotos');
-        grid.innerHTML = res.map(f => `
-            <div class="foto-item fade-in" onclick="openLightbox('${f.u}', '${f.n}')">
-                <img src="${f.u}" loading="lazy">
-            </div>
-        `).join('');
-    }
+function openLightbox(url, tag) {
+    const lb = document.getElementById('lightbox');
+    document.getElementById('fullImg').src = url.replace('/s320/', '/s1600/'); // Mejora calidad
+    document.getElementById('fullTag').innerText = "#" + tag;
+    lb.classList.replace('hidden', 'flex');
+}
 
-    function volverHome() {
-        document.getElementById('seccionDias').classList.remove('hidden');
-        document.getElementById('vistaDetalle').classList.add('hidden');
-        document.getElementById('busGlobal').value = "";
-    }
+function closeLightbox() {
+    document.getElementById('lightbox').classList.replace('flex', 'hidden');
+}
 
-    // Funciones del Lightbox
-    function openLightbox(url, caption) {
-        const lb = document.getElementById('lightbox');
-        document.getElementById('imgFull').src = url;
-        document.getElementById('captionFull').innerText = caption;
-        lb.classList.remove('hidden');
-        lb.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-        const lb = document.getElementById('lightbox');
-        lb.classList.add('hidden');
-        lb.classList.remove('flex');
-        document.body.style.overflow = 'auto';
-    }
+// Persistencia de sesión (Si ya entró, no pide login)
+auth.onAuthStateChanged(user => { if(user) setupApp(user); });
 </script>
 </body>
 </html>
