@@ -3,274 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brighton 24 | Galería Oficial</title>
+    <title>Brighton 24 | Galería Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
-        body { background: #020617; color: white; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .day-card { height: 320px; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; border-radius: 35px; }
-        .day-card:hover { transform: translateY(-10px); border-color: #3b82f6; box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2); }
-        .day-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: 0.6s; }
-        .day-card:hover img { opacity: 0.7; scale: 1.1; }
-        .foto-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
-        .hidden { display: none !important; }
-        input::placeholder { color: rgba(255,255,255,0.2); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        :root { --accent: #3b82f6; }
+        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* Optimizaciones de Cristalografía */
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        
+        /* Animaciones de entrada */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+
+        /* Grid Mejorado */
+        .foto-item { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 1/1; cursor: pointer; }
+        .foto-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .foto-item:hover img { transform: scale(1.1); }
+        
+        /* Skeleton Loader para fluidez */
+        .skeleton { background: linear-gradient(90deg, #0f172a 25%, #1e293b 50%, #0f172a 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
     </style>
 </head>
-<body>
+<body class="overflow-x-hidden">
 
-<div id="login" class="fixed inset-0 flex items-center justify-center z-[100] bg-slate-950 p-6">
-    <div class="glass p-10 rounded-[40px] text-center w-full max-w-sm border-white/5">
-        <h2 class="text-2xl font-bold mb-6 italic tracking-tighter text-blue-400 uppercase">Brighton '24</h2>
-        <input type="password" id="pw" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-4 text-center outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Contraseña">
-        <button onclick="acceder()" class="w-full bg-blue-600 py-4 rounded-2xl font-bold hover:bg-blue-500 shadow-lg shadow-blue-900/30 transition-all active:scale-95">ENTRAR</button>
+    <div id="lightbox" class="fixed inset-0 z-[200] bg-black/95 hidden flex-col items-center justify-center p-4" onclick="closeLightbox()">
+        <button class="absolute top-6 right-6 text-white text-4xl">&times;</button>
+        <img id="imgFull" class="max-w-full max-h-[85vh] rounded-lg shadow-2xl">
+        <p id="captionFull" class="mt-4 text-slate-400 font-medium italic"></p>
     </div>
-</div>
 
-<div id="home" class="hidden container mx-auto px-6 py-12">
-    <header class="text-center mb-16">
-        <h1 class="text-6xl font-black italic tracking-tighter mb-4 bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">GALERÍA</h1>
-        <div class="max-w-xl mx-auto mt-8">
-            <input type="text" id="busGlobal" onkeyup="busquedaRapida()" 
-                   class="glass w-full p-6 rounded-3xl text-center text-xl outline-none focus:ring-2 focus:ring-blue-600 shadow-2xl" 
-                   placeholder="🔍 Busca a alguien...">
-        </div>
-    </header>
-
-    <div id="seccionDias" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div onclick="verDia('1')" class="day-card glass">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s320/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg">
-            <div class="absolute inset-0 flex items-end p-8 bg-gradient-to-t from-black/80 to-transparent">
-                <h3 class="text-4xl font-black italic">DÍA 01</h3>
+    <div id="login" class="fixed inset-0 flex items-center justify-center z-[150] bg-slate-950">
+        <div class="glass p-10 rounded-[40px] text-center w-full max-w-sm fade-in">
+            <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <span class="text-2xl">📸</span>
             </div>
-        </div>
-        <div onclick="verDia('2')" class="day-card glass">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s320/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg">
-            <div class="absolute inset-0 flex items-end p-8 bg-gradient-to-t from-black/80 to-transparent">
-                <h3 class="text-4xl font-black italic">DÍA 02</h3>
-            </div>
-        </div>
-        <div onclick="verDia('3')" class="day-card glass">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEht5UQWCB3_Is31jwNS365b9iQj9ZRBvzZZRkm0VAfE-LiguKIV_zguNJ3IEBFO427GkaxaySByPsWMK_hy5A2fUBawkTBvs51cYLZb6NbRJlvFYcc-yz8VRQJflaUwX0x66zX6dcWUzgujLsgKAkmrnSOumRBOp1FFgYqgcIfREj4-dOJsCRKS4Ya_wDE3/s320/46F94A7A-EE05-4B47-8960-ACA807D104AA.jpeg">
-            <div class="absolute inset-0 flex items-end p-8 bg-gradient-to-t from-black/80 to-transparent">
-                <h3 class="text-4xl font-black italic">DÍA 03</h3>
-            </div>
+            <h2 class="text-2xl font-extrabold mb-2 tracking-tight">BRIGHTON '24</h2>
+            <p class="text-slate-500 text-sm mb-8">Introduce el código de acceso</p>
+            <input type="password" id="pw" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-4 text-center outline-none focus:ring-2 focus:ring-blue-500 transition-all text-white" placeholder="••••••••">
+            <button onclick="acceder()" class="w-full bg-blue-600 py-4 rounded-2xl font-bold hover:bg-blue-500 shadow-xl transition-all active:scale-95">ACCEDER</button>
         </div>
     </div>
 
-    <div id="resultadosBusqueda" class="hidden mt-12">
-        <div id="gridBusqueda" class="foto-grid"></div>
-    </div>
-</div>
+    <main id="mainApp" class="hidden opacity-0 transition-opacity duration-700">
+        
+        <header class="container mx-auto px-6 pt-16 pb-12 text-center">
+            <h1 class="text-5xl md:text-7xl font-black italic tracking-tighter mb-6 bg-gradient-to-r from-white via-blue-400 to-slate-500 bg-clip-text text-transparent">GALERÍA OFICIAL</h1>
+            <div class="max-w-2xl mx-auto relative group">
+                <input type="text" id="busGlobal" oninput="debounceSearch()" 
+                       class="glass w-full py-5 px-8 rounded-full text-center text-lg outline-none focus:ring-2 focus:ring-blue-500 shadow-2xl transition-all" 
+                       placeholder="Buscar por etiqueta o día...">
+                <span class="absolute left-6 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-100 transition-opacity">🔍</span>
+            </div>
+        </header>
 
-<div id="vistaDia" class="hidden container mx-auto px-6 py-12">
-    <button onclick="volverHome()" class="mb-10 flex items-center gap-2 text-blue-500 font-bold hover:text-blue-400 transition-colors">
-        <span class="text-2xl">←</span> VOLVER ATRÁS
-    </button>
-    <h1 id="tituloDia" class="text-6xl font-black mb-12 italic uppercase"></h1>
-    <div id="gridFotosDia" class="foto-grid"></div>
-</div>
+        <section id="seccionDias" class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+            </section>
+
+        <section id="vistaDetalle" class="hidden container mx-auto px-6 pb-20">
+            <div class="flex items-center justify-between mb-10">
+                <button onclick="volverHome()" class="flex items-center gap-2 text-blue-400 font-bold hover:gap-4 transition-all uppercase tracking-widest text-sm">
+                    <span>←</span> Volver
+                </button>
+                <h2 id="tituloDia" class="text-4xl font-black italic uppercase"></h2>
+            </div>
+            <div id="gridFotos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        </section>
+    </main>
 
 <script>
-const fotos = [
-    // --- DÍA 1 ---
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s320/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg", n:"grupo", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhESVJFesVK8dwP6N9VKFcNV4LxIg2GkhbddgVZ3XFHz20TRymkW-FNb1R-bqcnpCjTvJFChAn5GnqBgPBLr0K_YoAW6bUnUQZPq_cQTb2H6qn7NSUxxBTiCP1EXXZ4YdHGZkSCxON7Vw8sZ02Yq47aCcUhUmqJYElFbyBaIeMqi0iEgWkMxdVpMUjxPSJ/s320/4146D8A4-1025-4805-B02C-D357A62DE0F9.jpeg", n:"amigos", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1gx1OCQ5yvq2V5ugEtwj3fF7cE07hVbQps1dDlKACKE_bP7btR5vpMrOMz_6XGG2del5Qnm1vbZh4dQNhFgu4bjyg1qvoZK8SAmsNnEHz2GmdiaSKKP5hx9wgIfhE4oOWRM9tfeaPTI177L2piYlIRQH6Pk8g59nlp9qF-fuBV0YqZP4Nucy_wmi_0qsQ/s320/FF175960-933A-476C-A98A-34ED15559B37.jpeg", n:"viaje", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjWBs0jxQz3nTIB73yf7DB5_fld5eZhOzIIBZFNp1Oxw_xwmGAcbwiyxlwlusq_GPTAZJ9kytAlDTB2gXtA-TKSfCgkO1Z_Hc2gGvXmvXUFQY6vduoFcKJa2EJPc8GWP8AKhimn6XPVbBwJjTZHm1K9dVMgBPHyg7CYKChAwp9h_ZbzIzcZMb99mr74BKfe/s320/B896A35F-B3C7-482D-923A-110F8BD75A21.jpeg", n:"calle", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVeigEphaQI5jlzYK8_a2Po_lNC3z78Xw2SC90R7kVSvYVh7QOjktIBtk5w3hGMhKi3coXEjl3jQpg5tloGlDHDKiLfDV7GAZ6ySP3uG1wlYE_R_7mUdapKhPXgrZd9nqS3bcTrHQOdIi-kHjrvDfCd02hZIb_ssCeqDfDzMPrnxs90H9UtyThe16LWQxp/s320/0CF34E6D-7295-48CD-AE9A-C86433BAF50B.jpeg", n:"risas", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhE3imMaj26LQcXkf7U_CFcvwTHMS_yw_oBpQRHLxZzp9cY2C-DZdsWzYaleR3rJCVWhtmHhSiCZQhC9bTsF2UaDo9FZBLU1llIqWvT8E_Kcfc5XS4ttj7Ov2OZz0tLUKJCaRoKeTLAQYDCEmB9YeRvxaZBLKgU8qK1PowZWpbCMm30to99d9nuV6Lre9OQ/s320/F249E71D-6DCF-4378-B3B4-9F45B0070D8C.jpeg", n:"grupo2", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhg270_nakEVh-lsYAPcBcOZ9w8z0i2e3cs3YXqsYHL7PARTiqVUJtN3JUVGAsRdR7dGlBjToutb8hYIrpGucEF2BMueQ1mEYGRsa0HQi8mUr8dh9CTkru10WKvjPHh3xVfoQjZPDa6woagjMwxRGZK2qAXM24chpO9EwCA3LnRedyfJX_V3Rp69N4NcNUM/s320/3DEB9951-70A6-4854-841F-D712369F56EE.jpeg", n:"paseo", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipWBRKq8l6H11qcE4eMPhrnK51GW0vD7F0XiduUf-DS3zrJz1nXT_TwNEc0f-JSdRLEjyWzh6tDB3ywACPj4QitOmMqC-FQCxJmR_nUK3ys4X3Mlsrhyphenhyphenm2SzyACR9_91T5XNSPxtlT-f5cePYTmo6MQgJfxUZdseXgae2C1OINI3qDMVW3n1DS3WPq7zMW/s320/BDB19226-BC0D-42F9-9BB0-5A2B148352FC.jpeg", n:"noche", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgI0NKABCo2Whc0A7azyTuZ4rmeviMfE4z9eyqaM81u6cMGFcZ7NlPPtX3sROdpGXNk61lIwBuE0cYH6PL6u9P95EgCYKwnpIg9z7Q3PMJH2ElC26HaiMfzjuUzUb2oYeDYdVUqQf6s7AHBK44XolN2G8oK6kIUZkcNLUlcCcXL7hP1EYbOuAu4-x4vaBYw/s320/F6C3EB8B-5BD9-4D71-B48F-21DCD78F6A9A.jpeg", n:"cena", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyU6PUdrxwuuK4HW9oSZDgMuURNCIqjQ5SGjukBJWDZMzExkEDbSVa7JLN3nyO6RmtkCu3PaR3sFXlOkaULipP5jdaaLZjAbeiY4wrTNDp0aWL1nSlvSF4UY7_UakOVAAkPMIp1IYp-ISz40BGo5WPXwDk6YsAMFLzYhegyIXVnbkby4l6a6WRkeiYdnpS/s320/164F9C1F-B025-4A2B-B92E-2A10BD0B54A1.jpeg", n:"grupo3", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitzPms6N0pDdICcxnqV208lUs42HZSl88kgdAH2nEtmrsn1wxoOFZEDfcIcvJs8G-bamr_15IlGTTgx0MA-XyGFezjYKvsgZka7L4EWPETBN7yX0xlUhSGM5XppS39tKvlztHdSh0wNuxzAKGvKFKrNzwjhwjpVdP8a5_hXo_IChb7OdeY4tnn0iprHcIE/s320/FF3DCAB1-CD8B-4E86-9D03-F794CD0DC762.jpeg", n:"comida", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitwiyxNUjaVoxKeopuKLFZC9wgASMnmKhJXwcYFfwjON5-Dg7rMKay8ppkseiG5lzGdAsaMetCRUA7ADGtoLEYGMeMUIaT9NpqV3bEnC-q8ChLTi4vps8a9czHVyYpPqTUllfTlnkL0kZRntd1_rzl1JQMDgelCF7CnCqZCKjKJBJBEwKYSokELJXL2Sce/s320/B6D1C336-8721-4BBA-9684-7B047E076A01.jpeg", n:"parque", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgXZQpKrTYJZA-OdSGEOs6JWkahI1MpvFee4El3jek53ta4ouwZfZT4U_gk7lIJ-mQAp8kDSV07DoWJZ-RSFGWCgqWfUgFlNlm9x-O5KKs0PCoapzOeWTpQo-LSBT0jFUoSbOeLjPpEPZkrb7OaZaAAHMZdEJXH5biAJGDBub4FJkilBqPH8e-wpxDs1T93/s320/0578CD01-9888-4FAC-9F6B-D97B76392663.jpeg", n:"tiendas", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHMlYlnHA9wPFqjVDB9bN9UXYZ05IkQhO2MDJpUyUltDw-ScnhgNx3vBdSg1pqiCgQRcL5fJdlXXjqyRNWZCgQlViOhc2Aw_5AlNJaqtZDXerZavpR0iVjD7LwZkME131E56EE5XhI1SvXr7x_fqDcXaPD8-6PBLirvPsK0s1rCskKHlSzsIFK_mH36WDI/s320/0129FB86-649E-453B-9DA7-B45E0CEE2061.jpeg", n:"metro", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjuTsd1Yvz-gwvCpgoOkUEpvAo5PAhGVNFnSV9E1pE6chFJmpFk_R2EtaaiO6bo8NeXkPixmElL5O5Qyusj1-McgCe1msWKR7cbhcASlcVB0zhWr_UUw3DUEZbTlzPSlHDe_qsDvllShr_8YyXw1mvLx256WIxYXBa9p-ciAhARasaBY5s3uG616GwnF5WR/s320/0B80ECBE-803F-44A5-8017-9DF9E108B7C9.jpeg", n:"estacion", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiBdgpbkLuVgX0V-xleX-DjnQiNhfrmr9kIsYWRBAQwKirAV1dAMFAnlTJMbVsB3AY3UM5FAM_tKo4GK9QqwF646YiaPgwUtcPxcBQCTFzZIMJQBDeb4nq2gI8xDVlbZ5gfxm8kEqVXqlqpI4zdnQbPP3ajXaYIzLLMLr17ZqHkP6tjQ539AtOePSEaHyK7/s320/9385969C-F471-4E1D-8C0C-787D84CEB3DA.jpeg", n:"museo", d:"1"},
+    // Configuración y Datos (Normalmente vendría de una API)
+    const CONFIG = { password: "123", days: [1, 2, 3] };
     
-    // --- FOTOS DÍA 2 ---
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s320/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg", n:"foto grupo 1", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiHq4RJ_eOpF-052SB64yrC9yAJAQDcNI6CkXt2rPibzgcO8tanaCh4kKw1cczwSwzevLHAktwlcuOsEyxRprKP42tx-XeXRYPyjZzJpeA81ixd7uCsPjxNuxfVkdhyphenhyphenoXaEO2Sb-ymSJAGB7cj037HFwhf-hVGPooRhAyYggbMUfQ7K6u5Op9NkFEc4ZKuT/s320/291A9BFC-9F71-4837-A686-062E40370F9F.jpeg", n:"foto grupo 2", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgS-HStGYFaCBqgPlKn9iLDbymyxz0M6MLVNDp2xmVzOeNMcue5s-s9sU9virvipvKetfEiSD2PTLBWr8UssKNy6KTnO2ufI9mNKpW5d9ymYWPifGFZ1Fr1hjGvEstM8Sehixg2pUHrphxhKWalrwCfxxGGJSwezhR0lyw59O0MpGqZ6WTFDYoHwagDHEUa/s320/8B3065F2-1A48-483E-B5F7-E35219B3C4CD.jpeg", n:"foto grupo 3", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVmIohySimgYXLE9B963EVTNmFkdq106YYawgbjxhNz6njOY3OTq7c16jQhiZVRSj6oQovCL_8bSYBppe9FxqB2DXrZTEqWHx4SD1d86qPX6gyTFnzH7jnqkn2chf57bdUqflrLdOY3l0rfpjm7b9Gp2wh2zBmTIOciQMa27IHy97eK7DoCWPLJmSoY_Yo/s320/8DA828DF-B986-41FB-87FB-CB8A95F9A411.jpeg", n:"foto grupo 4", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIr7mW69dumeNMmYeT8O2GmoQcPmS8LN1JJnTNeC2mWQDL6uLvb266c1ofj3zIAxNBBpM3VyWgVzbb_G94cU3nbyRwFXz-c7GhVAbT_VEnJvjiG4wdWfVNf8ppBqwib89NMuKXH3NTwwOjTq4tJgISkxazvzPt3hdlc5k8ZIIcdxjlv7J1SVC3MBDHlUtn/s320/426EAA57-7F35-485B-831B-08F4C1E87E12.jpeg", n:"foto grupo 5", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWe_PXMJAT-DDh80b28eSkgfFrELHfRFsM4AQbk3BUWaDO5B6FQGrmZQVcqqQ0CISEcSsnrz4zKTYahqVJG8aYuF1eOmVZs5K2TS0snOdPX1CzACACgkiAP8-ZHl_BI7ToMDoS2MNzUpQHJqa3DkQrSfvNnymNOjEcV4eAXIUViG6pS20RhaWJ6NIR2fk_/s320/F8A3C2AC-77E7-4141-9FFB-A0DA64B30626.jpeg", n:"foto grupo 6", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYJZsn9Ypr11RvNTIawhFovmF8nJDQRYHfrmeFJxQR-2XFJK417WrbfcFQs47MjmlO_hlcpSV3juiTgPfmrGHD1Dnw7ICqE0-DGd0xrtunQznZfgLpPqGLEBloCAWBL0ZZ0g05cNQhltoKUjwHpk0pOlVQS8YVPGewDtZ2dgwto-K7GgO9kkf-tmr-ZBja/s320/C9FB9E38-2A74-4B8A-B86F-CF28B20DA7A2.jpeg", n:"foto grupo 7", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgZC12a1aRcXvf0V0ORAXqA1muox0wpxkb_kfZpE8GF4hWJonpn7tcgdDw9dVro0nHTACSyqxEqeSP-PX6MwsTUOHqOps8wfnJvbyDL7RUJFgmMtPUf3Ne14EDDKTc3zgbnSY1UvHh3PFsBWhjS4M2pElV8_JTcVvlx5MEUT3Hi_3UTgwrDQ_ND6gIwJQiO/s320/8C7620F3-C308-4F83-B7F3-BE8DE183B401.jpeg", n:"foto grupo 8", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1qJ8ttaAZS_2XbXVJykFolYBpBlgNklHm-AsD-uN5lrpl7L59FPy9UWBCNVjyhkSOz2UuHz6kJxrhgFP4sv-gaPqks2no-hZ3_4f84ryzT9bubTsgXlaNofFZwmi3LgKeVOcpyEoXIq0zdEYkdgckeatm6YtbQkbbLJzq7XEUphqgXevK313lriXuSw2w/s320/9989E9C7-29F2-4783-98A1-A3EBFA8A34F8.jpeg", n:"foto grupo 9", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhoNpDPUBcWGllMslk7gvsRbXMfvgbWyD7jiV8SRB0AmT_8NUWOILexnQF_yfDB0VTJ49aPPGVIceD1O-BJh3g2gKLXYTZ6l2QudQ4HSTTGmM0OghAElTV15OMlDJ-dKV89YpLH0loBJCLX8DAEf9EEp3aaEQD01fzeBgr0j2pXLuZyx3UNa0F8IWEQW117/s320/9C90207A-0289-4BB0-B695-6655770537E4.jpeg", n:"foto grupo 10", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEihHEVxvkUR6ve7fwN0dob8uJV1pjl0YUQECguABew3SrkZnb-Admox25FsgpVGdwITPWYmeK7LNfj423UkeUT8u5-XRYr3thYh8ZD5TR2RJkzgCR_qgLNdq5JSxIJHRA4V2NkXQU4is4XcNwj1CuTToYIRcx_BFZwdKduBlWawxtaXzyiGPNajrXIBLE-h/s320/95B107AE-0860-4C19-977E-E82F30DB29BD.jpeg", n:"foto grupo 11", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgZA70ahctSoABk-PrRopci_FDao-iB6mCsS05Na2-71aBCX4zE6VmWqHGhFJwMh5j0vT53eml1pom6bzM4D-Rv2QMY4LgjnX_J-DzrXwtXAxE32LPIU3Jq5gt64cYHb_PBSDrCnv2JY6PG0J3miuutuTZcX5Lp0NGRmW5owiO5fga3SL_xpYRfKM47ON3o/s320/1E4FB0F3-9EF0-4C02-817F-D1419664F140.jpeg", n:"foto grupo 12", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjntELhK9cYkN3wVDXVgE707hfvGf7zdlA1_XsM7TAfEf6TpVL6v4SB1_VthbbBLYLC8RwpA9y4vByIOUJ-Umarq2_SPjxnalSTmditet7hvOL2RjxkzzHGbqnQ-hLsFI782VMJ5cuIfAVFLNX5J9hCp4zoo43mxlOW6mXkqUHRwUdrFh2DtjEcNoqeFLsy/s320/CDD05286-DB6D-45AF-BA5D-648979AEDAD2.jpeg", n:"foto grupo 13", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgVjPu9YyESYb5-hfAME2af5zimxHUN3V7nI_rCyl-zj2j5hxj7ZLp_Y4bFA9kxCXUoSYX3t9bSmKQcyZpFQAqIIGFjRWritCO42bSvb7w3EzlhO1zcl6SDKDy8HCmyZNy1QSzkw-rffT9yfTpEq0xDt9TjrjVTynLgtZYoE4FNvsEUifL_WbKz_hDrcrKO/s320/0793E9DC-0BF4-4D3C-AC1A-E43AC5D9B7D7.jpeg", n:"foto grupo 14", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-yQF1MDdZZc7CMdwDp2zf7ft1nlXgloVF-aGQ2pjJbEpvjVg4ZEKcxUyVLRxhaLY0AKN6_somvwM0TsjKOWvtyoiy8KIekkIxpXHv1FOg7IZVouN9TCsAVm8Um_tznq-WYTn4YDvXk0THd3dE0XBuAp6BXSBbsWRQ2E2sWpG7mejeKd45sUsfDp8YuiLE/s320/CAAE7854-26F9-43BA-B9DE-BBCDE31A9ABF.jpeg", n:"foto grupo 15", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQnQwmv0ziz-2qO60961rfuTM21X6EHo9o8OgsQbXaVL4Azvuh_rsQeZVS7XllqcgUmiypQi9-Az8oo55SpPlOizFDsuKk5PXoAbZ6odT_qYJLuP75DrLyO11UFcyuKtbq6HUAqsKQPYP7kLPRZ7h2vURuaQJX-LK8fD43uhh0BZPP4X1fkRai_obl5uj-/s320/37F0826C-2E31-4E24-A74B-DD5187534766.jpeg", n:"foto grupo 16", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh13rZ3I0sOLaREOGiGjdndBH8YGOafO__Pjp2tdqUQA1vxNomSf8x5oheSRb8kSEAZLu5KC7SIkYZeDTyWGCs0Z8qqeQZk73WA6MbJ2DCIHX9vKCaatxh-dzxQPvCEakjjFipvUVhHBm4BxvVAYHeoFtxj4YMkERyyureLtFmV8SrJBNDeZyItjd3ETBAg/s320/A831FB53-A6E3-44FC-891C-2978428CCBF5.jpeg", n:"foto grupo 17", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhzo-5z127jo16TFdhu55-EYQ_uPGWv7_rXlP726WyDWl9TLH2Zvz9sBO_3xKsb8DpTz0P-Fe6MG-Vpm8RFnwYomgEh5dvJsGQBo6HKw4XNlculq8I_Iu1BXyUfZZKAI1byCbkP-oHST4tjqIYbEpovVZ4mf_SiIr-p2rvkIZHLS3UqEf6ZUAinOEejipK2/s320/7F9EF440-0043-46F0-83E9-AF05526A38E5.jpeg", n:"foto grupo 18", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiW8w4hxZilV-cjoQzHWeQoNXQPxYAXOrpYGSO99F03aGDtYz4rwaJr4Swhgpkn2p7U_JLOA4pzgYQa4-K8BLs1kg3mUm8skpBwR8Km2F039psczXRjvu1UKOsDOg857aA2F3fCLBJqnMT2lW8uSVSj53Ygo9jVAroLCY49oqqnfO58naY3y0XgOuy6aZdV/s320/96CD377F-CFFC-45AB-9A77-34010401DDB5.jpeg", n:"foto grupo 19", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjoFE691nXM8aZCiFpwfbLw23zf2Rx5wtXLIyBX5Gs-pg9t_KpF9dxr55XOeEVrga9F45iF17Fi-AuoHCXZQaQLJRJlYpwMy1SVGQ-eooKX4DzaWphJzVtyGIQwehVs5nmiNLEx4nZB7ebqlay36W-DUvAAINTloPzGXc-aEtLiCrnZCNhmwcelrRSqMbyF/s320/7ECEBCFC-1743-4FE1-8214-B9BBCC134B75.jpeg", n:"foto grupo 20", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhP9PlX9aBxJ5oXMeNsMMkLDPJ9o9ZVEYU3nPaDlkiVVvHEQW9PAVm3kBPB2LynosnbA4pM58GG_rH6FxixP9xFq194WJuSuz5iIWwDwoMSGSbUTcs5ea4voDxK7K7-QxLOAmEbY7ZcHpGK0qTxeB2pibBOFk6kfLg-SqEkiapYMDrYvtmSAkYGEZgOlUUv/s320/6162FD76-88EF-4758-B53F-EA4A0C44ACBB.jpeg", n:"foto grupo 21", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEht5UQWCB3_Is31jwNS365b9iQj9ZRBvzZZRkm0VAfE-LiguKIV_zguNJ3IEBFO427GkaxaySByPsWMK_hy5A2fUBawkTBvs51cYLZb6NbRJlvFYcc-yz8VRQJflaUwX0x66zX6dcWUzgujLsgKAkmrnSOumRBOp1FFgYqgcIfREj4-dOJsCRKS4Ya_wDE3/s320/46F94A7A-EE05-4B47-8960-ACA807D104AA.jpeg", n:"foto grupo 22", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEggSMYum0_cEArprnzHzBOf5muEvZYrxvG956BncdxGLdk4QYK9U_a1JRtB5xYnVfF7FEy3rYK1rURxHhfSBWYaPqIDD7E3KMN2YVGRY8XCD4NaLsJTOA8SFJIFhD-toic-MaPqIqWX0HKzOE-AwRhAa2zRbEsBvVAysBcFgZWpOCcqQRDOJv2V3d8RCw2c/s320/5268562E-A667-410F-ADA1-725428B91577.jpeg", n:"foto grupo 23", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgxcFuow_DmptAPQIMnmQhz4PNy4-vX26w8NR0Lkq9bAtMiDGJNMdAluNeGxuKi6vpwIpsmJosNqh1MYBQGwiT7noM4OvUADEWShoBQybYPkKJXjK8FyQ7R0wU7TkZ-oYJl9Vqo6oIOgnaVgr4P4BNIkOLivQZpfDipad4ki-GcuEY1RCvlw0Zjxrf-Jh3i/s320/423E4D59-60D9-426C-A34A-1AFB18943855.jpeg", n:"foto grupo 24", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi-L-iLNkDSIUi107zhaYGN2OrJ-agVWCFe4FGd8OkuD7ueQiQZets5SIQkICVdibjSLtE-8g6wDlji_tfFxFeJYaaz9OqBjShyphenhyphenGA1KQSWjCwFwPLfhKAhvkqK0UT_1BpM4i3gY_rmZSDQXxBzKDeQFMOTEaHbjHUagtCVnN-q4hwYIvoRYBwNd2TyxUGPF/s320/61F19396-CD9F-4510-BEB0-35D73803348D.jpeg", n:"foto grupo 25", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhsZnqoLQtrHz_kZj7wrBMCDU7MHwdgqz4kbQcj-6YKhq8a_fx1kACYEvI1XNS9yI6viXA_Dw70wkF0tgollIOFdmsOLdb9SfeieJDiBQLv_8j4dix4CN5nbuu9Ei2h-Oo_n_eY0SEEBhyphenhyphen4ZsXdv5r33AXMxxbTFf0UEy-IDyRvH1a7aY0f4I8q5GuhS2Bg/s320/09BED3CA-40A6-4710-B650-301F39545F00.jpeg", n:"foto grupo 26", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjG0V82vIq9gtLTW15r51EGA8Z0Yqo1XlTj2brvyQJTVEVJMdrnufbVUHajyCvCjR8aaOk00us36Em9BVzKtEU-kbxN9_lQKeAoyrJnoFPW55H5ZurIiX7LGRAa30GIq6ifJNx0ANBFoBqW1UpKWg04Ca_w4TOuOomFyC54ypm0erU7rUERLhNqEyO15kfl/s320/8218EDF4-E79E-4C58-8BF2-98D04F162BF8.jpeg", n:"foto grupo 27", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgDSnuiefhQjWZICLQvdY_aHYLtJUq4k5dHMm8Oo61xXZvxuATjl1soSn9sBUi3QzboQQvUgo5eE82gIqPUQlZQnlNHm6wuN2xffER76EiHn2aU3Lv2Zx-X32AruZt7DSQMDS_L0j3yVTGWwBQ62R_TZZesctyvU3IbhXsgEm5Ox_8Io1f3iL_TMUzoqs8A/s320/5F103B9A-587D-4A00-946E-00B55FAA3F7D.jpeg", n:"foto grupo 28", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjqzCNODmTc7umLbmB_IrNsLtpNICD-DXlta97u9x6njSVzqIrifYIsYT6qssQ-2sARFVN87ST6v5a5N9SHeNGBwv_iCXRLWXSq6nAtns5853HU7rFf3aWY1RqYenaoM0ukgm3T6m03g11lZvVmgyrOM0bbqIMdzmNIaBnrTTcf1NqdFVD5viYhY35HVLP5/s320/61239051-11C4-4978-AB2B-E3325BAC21A9.jpeg", n:"foto grupo 29", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPEXPD4YtNw_d5U9k7yYtaBVJcoIYnJc5Nc1byvlPpa8Yy_mWlJzHqg0mFGEgUzhribRq3BG2UGnbHjjMTJb5CNrdqYqzbCmZBaaZDaccROYwjYWI_v9Se3u7oYBAVSMHDjO7VH5aeaRaovKOe1ZHGdKYgdB8-dEki6iUmNwVJT0X2NMo8MeIo5OSPcBMS/s320/41A68726-0078-42E2-AA57-F2F4C327CD05.jpeg", n:"foto grupo 30", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibLkuCp68JD1Fgx4q2s4yP4DkdlTTYN40Iy592wO9MUt3UtffAyzzHfXr5tHdETEsZTZv5PWQ-uW0CqilV_AhHLZTc2i5MN1_5BE4I13U0c4-v1CIDf1ben2chWQqH8_bvVxkCTyz2sB9qscLoJoMbaCPU5VMGk2DglemgK3TFalYLmALtVPuarha1019Q/s320/FE7C90DB-4D67-4E12-AF5C-F30296201019.jpeg", n:"foto grupo 31", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiaYEna6wwZsotaHHZfsZ3FBl7Dh8GmQXZ-m2YApXupbZA1tCX3_1PZOWvzlnDfOvzvDoX7689AQuZE8p10s9SWrL8x2oTksVRua19KhyphenhyphenFVIsDRg6k2E7eZnaTwfjaIUHLufM7DIV59iVZ8p96tKgDHUPEG_p-I3MlMm9S07ycprJqNpervW4bhLjMBE9G/s320/05D03CC2-6CFC-4123-9507-7E6D6CEEDD72.jpeg", n:"foto grupo 32", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiPGwyataxumgmltDDSvRD7luq-594xqAsryhUd5sOxvAHTTWVvS2kNjEyJV2OuH9FtyUC7CgBzZqUNo4K7lnTyKaztHXPBKcaNd4AYZjGbgOHIwaD0gww9XqBcEN9bJhy5grw4kcZ8xtg6lx1n3k4GyBV2rjl8rfF5TAa8lGU8Ve21HzLangZ0lacjzXRb/s320/2FCC7397-4BED-4F4E-A9BD-F7F94DBBFFE0.jpeg", n:"foto grupo 33", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHvnzkeIwo3Urxn3QyjPd1IiipmN7HCcLEivAJuUF5kG36RTcuP5gLQ8sp5JkYdikoH1yagjZ2FHa8DAb0amOxCxFX1ldiwkymdWz4lIrtiSaS-ne7Vg-SEEGT2NDD_T7F1d90ADgZA8KGUghViBgIUXHGSULTRlq5p7M3VaxOZQFYzJVsCAmtmeza3bHr/s320/A0780C36-B855-4462-9A64-AF8A0EC15165.jpeg", n:"foto grupo 34", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWcT_EcZniJDuONB6U5e7obF-_gMvH9V68ifr1dRNGGROuEOAp57FxdqEqkGQw_uce7qGsaAXZPopKvehy2zASc2dUhc336RnXkHtOII2Ro4U_Jvnn1vU5tAFt_qpmRnlqtgt7JqLjyBmHfUFHBLf0ZrOgPnVpL1OTg6E8MAXay3g5uOZx8QQfZi1jnWAG/s320/88D69BD0-BB34-4E9A-B12B-F7D80FEBDC3C.jpeg", n:"foto grupo 35", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhcZyqHbnsHbx8jnrmPHRvLKdNvD4Uoqxio9dWMWJvytGgn4aI2sEFk3Cj9rDpld2cN8OsobtsJ6cBMst4Q_aAwD5kT-U-OCNaMDfzc70skwwzN0AIakA2sd1VVwLTaywdwZabjpE9JZmfQtNwcuMPFq4Nasvv9IIG1MacGI8ZASeHSgZZC-wQ_6zAWY41-/s320/1D0F7A0F-488E-43ED-B7D8-53EF356D12B2.jpeg", n:"foto grupo 36", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi3STCy_2JUxQv8lCs6zJBs01UocrrmNKc4tifZZ_qOQm8DdQu1VsgTUr7LT6EYArB0cgpFgTLiZJoT3DgemYtg19sWrYFksKGzOrKoZC4wBMNLcGXa1QgjX6bUjj0i1Gho1ytZE_1Mhf-fHDBE6Ml96MCLn932a4H3hC25jFlJ5kvPs2jw1_ZFNRISVlxE/s320/5F7B3E09-4264-4D80-90C5-728DC5FD1CA0.jpeg", n:"foto grupo 37", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhxY796OKQwjvYAcSR92OuOyEj4gg4s1gL6jnn9a51AAuvbTQUUOMuFTl_g9Z3VlMd9BuWIEOedGptpLRb4brs1SuKWp9l3LNyAoG7lNKvv-CFWFuSPge4YePUKErvZjXGaSf3vG9rvxgVt7eoNtnAJvCOqlQOiV4Pl9Z70-RWxfjcPmGJXXjB40vIUL9Bu/s320/00D28FAA-09A6-4CBA-B7C5-7DB9D59031DE.jpeg", n:"foto grupo 38", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmRULllxgGe4OLSUCq7dLpmm-s65ZL88t0GBgYI0imhNdtGZlP-V8uXTGvZig_YJsa0JZFeL365Du1XCSUeYsG-aK6q4sQKnQjSqTbUB8rlr4OLbEW_qoIYzdREBi-wcQ_LNytVYqMtNH5R5oCeFYg8I-LafZu8f5Gv2upRXF-3Zofhg8gEf9nOOvvvcbU/s320/7DC51349-10D4-43C5-AF20-E41E4E6B93B6.jpeg", n:"foto grupo 39", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiOrwaf-KnAkHvjx8nvogUZ26dbzRGOU5R9qMDp7U-lwORA2UOpZND89mABwt-Rmk-ZSZ5R5uYScuumFTY3BSXhTDw8zfbbVegBcO2E9y9tg1iMnajFqwIGUpYUAPGyIuV7N-nN7YjBpIaZy4nOXEo9USP9FHnr55O0beJusc5HeXuWp6VG0K19BKMWu9Ju/s320/ED596CB3-4E54-44A9-88BC-B08AC4A4EF8D.jpeg", n:"foto grupo 40", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiVpMNeuxw3uO4N_tTNcTLvxtlmDedbm1Ol4bqa-v43PWuSjf-qxnOAOK3ad9V0yk_iLvcsLXAisACMGe039E9Sn12jcS7M0YDSY_HF3nQh-nr-CpoJBd4ZZyIeGiafBbp9BRilrsquGibt8rl2recpf9s0XCzRa_w1iFF7UutPPOr5ex9hqQQTjqzwhJtG/s320/6B995DAD-A81F-4FD6-A625-9C0CF45BDC63.jpeg", n:"foto grupo 41", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPw52Tz3nPL1YngHhLqp7igC3H5Q7KVZ_VLwc5VOT_qqnRRqj3WyMIxXkrgHHvLpU-sbJOrtmFbYxBoeLdtxJbVIgHnIZkG1QACbzD5rWkYLHCZwcWaARdl-qQ6lwzNG-7UMTfeeKzKkLg493H8Jks2FRgnLA8uiP3_yKCK7zWlAuHTT8LJoUeFX_OsE9-/s320/1A5E76D6-9BA5-4B22-8AF3-C30EF05C932D.jpeg", n:"foto grupo 42", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGZpnOKxO7hd8FzI3SsCU4rG5sGCcJB5Ebl4V3aS3rcH-j_LBt2nQbxAHKo3Nrxd-aLghg5O8EuqQOxtLXm4y-pEa0nIFEaCWUGxRAML7BavTYim3G1dOwEsy3X79Xm_t4undrUEFXa18KDbmwW1RABqyplbTeSFnBX96BY5NKbE9dNJdCKPFQxeuIa51C/s320/E99E5270-C46F-4118-BAA6-2BFF8AA3A53F.jpeg", n:"foto grupo 43", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9Ke8hYHjSxARfnfsMuTjXssQ9WAxXVm-T2xAjtribi15LD7ZydkgnqdYx4r_iOFdSO-EMrpk40CN_65BBLXTCT8xPvz_v7JPBoOG1b7TIc42vgpt0e2amfaEMF8EoxTV_KFc-G6j2Z-i6sXjO9G21DyEcdIcvNczNUzOO7xVWd97IVNRyttcheICG-HzR/s320/30DE3CD3-6E47-4C6F-9C02-06732003122A.jpeg", n:"foto grupo 44", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGqxN6Aydf194SuXXkn7x_kqgSH0gP58xyrWR9suBnL_ZJc2b1xtg4BFiC6OKAHAt0HvMl7pNqv6nsVdl6HC4_e9nGztPNmGwY4RbPBvVcYzCqARJYnWLvu9L4Mu9p5OpierGBO3-w2SrtMP660MiolC_yMpPY_34cPsfkXk_4BVC9V93PqrNek9pAU7DJ/s320/61F49C8D-8D84-454D-8316-351EEB59D746.jpeg", n:"foto grupo 45", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgCwpKf3Ea2-vvmCqAxDM7Ty8Y224Ivl-kon-RGPYl2pA-DTDcf32MArdpKzA8oo19T0jebEH18sEKm3Fbsv4qr6FjJyrTFvGBPfPgFGcPn2GCdxPTWrlNgY-VWlBtIsHuux9k3ywb7BFEgcS9YGlswgBgspVCumKOh7wIkxrGdhFzftWhoF35jt0lxNPd3/s320/4E379094-3C16-47A0-8DB8-0A24B7B51F61.jpeg", n:"foto grupo 46", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjUfs9Me9nO3otJthparoDaCe19WfyJbnUgMfirPUK4izBKHRznRIJ0GoIe5P0nhEZ2OjzRAifrsLNHPFDId3UBUmJief5qd71LchWc5aa-edVHbnB_tA3cugBgRMNkwX55w2L64J1khwlPDJhPkUqvzorK64lH5xzIIhHZV3zIJcRWl5ubgIprP_WEjmh9/s320/1A89FFBA-D59C-46EA-BCD4-586F9CA6E5C7.jpeg", n:"foto grupo 47", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhZ-dwgCndS0Yp0ePmE-UoOdxFk1WIMXEFVnMPr177UvLq4e63AI5yShYKDGb7LXwyMcZXdodaqOf99_pBRCUG6HGPQqlU-agJoTpAWLUaX2QP1Jyj01SYcY2wCMLaL92ra90bhgykiNsTvroGtBhI6SlZnleQ2gZ4aYI7iwojFFf3jJz6bZ6atw8RXHadQ/s320/BF4FAEEA-832B-4D7A-B61D-4AC34BA873B9.jpeg", n:"foto grupo 48", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgoi-lE9eltCb8l1duDOWQK90cFAEflHyiq3sSzGIbEPa7YvsGxtLwLvYmeLorS1wg5OP1HEobhQzIw3510a2zWnQcj8GpR24UDNON-pJrlOeCQHzIInxBS-tZDvjsAO1VB1CNUTSPI1Y2-6WOnBG4cf4gutFhEAh3D4Y_J1WktYcluzG7hqGrAU3ZsYamI/s320/DBE7F419-1AA0-42B2-8538-45FA74BEC9CD.jpeg", n:"foto grupo 49", d:"2"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhwbBK3uVwBo-DqBQod4001pzUSJYJ3npU4c5koHrUQqg51w6pI959Z3fPcNgenKSKmA6z_m7C_4Yus5NfPXL0CEYe4_NKzWcxaJPgSlDER0gW57ocd7K-vJiHKzrwbHHWC8dfH4mkpgPdbejSBWtu6-nDTIqm7F7th82hrYKMaoofWThVxKCbhR2Z8bjkM/s320/F00827BC-DCA6-47A0-8090-8AA23B3AC222.jpeg", n:"foto grupo 50", d:"2"},
-    // --- FOTOS DÍA 3 ---
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiVB216thtcDoc7nmdEi4ZMS3D0BB7WN1zI5pzUKTw-i1FUhA9FE61hswL43ZCAtJeXnjIMRXVjvgtzcpYhEK9rPR2NVPBQZ6SgWOxRod5iy99Kc5st2AurG5-EUJw4Y5xYEu3WDvnOreuzzUzuMjD1TsggOf1IEEXeYInM-_tbSmvZdTO_GPh1dkh40bK5/s320/5078446B-03BD-4136-A881-505183BF148F.jpeg", n:"foto grupo 1", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDvXUSeP8VfqMabBkFHgVxuJyY8OvcuZMjnt5Gq3C2lLths0ZtAfV53PtYzH-QjZmZoR1HtC3QcECyZyKEnRFkUV3Eh9-hZUuDQFXdPNDLLCsLk3fOqLgU9i2dguSCtt1L8AtXqyVpKcJWMd19CEJKL-qXcNGXho7wwdFctPyTiqZOO_6O0bJZoRX9q-NR/s320/B33A8A5D-E402-4B24-8679-8C14DDEA698C.jpeg", n:"foto grupo 2", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh1WvorLHW4hyphenhyphenNVXI6SzeTn3n7sXudjS9u12rnsNObAGIaed8OgrO2lBSzaZ6nPMvCYf7hUscBOAhm4x_pAB9O9ht5YgOdWnPlU1_I-xxRpCmJ4qtlKyHeaH6bp5ZQWdYlvI_r78YdK_brE0B679l5o4PivAaGXN66VV0PBJLjKfBp7HJbH3tvd8HGYViEa/s320/259D871D-CBD7-4D5A-8668-5F71464E1E53.jpeg", n:"foto grupo 3", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEghhCMTKkCCsKuqUYilbtRellh4akcuE_SD727sEyNGM7daCrKXltgl7q50K5k9zAWsX-yf9YBoFXAXayz0J_S99YxfpbUBb8ZQ9dQ3LedozR6n-72Udl-WksTzxjCbFWbIpvHp4WR49lTgEnKfz1DmkDpnf2z9eEzzZ9qpoaSG_lca_BxhnswXU89HGQzv/s320/0C9F079D-80D5-41FB-9DB2-5BDD481883DB.jpeg", n:"foto grupo 4", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEivDvu_b0RF0wUDnk4ht06u1RJKa6QeIKOHuXK9L77bNImx64S-VRubK5yzphCA1Ug-Ns81lkGIwcC0QOMND2Q8pakvHxmnaYiFHhG1JBLtYlR0GX22HFqbRYc5yA_u8tPdsQHPIbi0hM2rRtUh9uOis6K0P0xMyywDH02U5XnDLbfzzKD0St2RwDdvI6kb/s320/5AE87367-EB9F-45B0-930E-B3BFD8B59019.jpeg", n:"foto grupo 5", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgvoBs20TkADq8kiaLVEfqztcEHZp4Qg48i6aM-4RoxRNMpAikTwuqiUkA0FRyp4n5DyoI97Z1XHxS2ZMcTaGS6n1PzpD4IcD7D_J3i4daMxGpZjv4-GF4x-eOFBTOvkCl2bPzfJaGxYnI4xFWJJ6tOuOySHc5bHKKe2rgVK2CAGrnBGqBnprkGVEfkbQDw/s320/D10B19B9-EA95-43D5-817A-4F63CE51E792.jpeg", n:"foto grupo 6", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNISxHTiqIWPig0DNai0VdqD-nqD6zMTuQoDSFQIPE5Rwykyf2FrHKooN40u3ATd55rS8VKj5MzAghTkXLiw_yvRKG6nrUW8sDWMW0ssZ9ZF41Gl4hNerfZeMA7BDgwUU4_6qoMKzRlkqgfXY86Y695uv58kYiW88JsxNHYKXRQOq8tmhoMvmp7oH4xqTJ/s320/FE8CF0D5-52EB-4EBC-8BC1-E66C0167ACBD.jpeg", n:"foto grupo 7", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiqbsb67IOpKrmSxENxFjRE_yMccDTpwGNKny8iYv0UOzqxgiC2p_JfpyW2_n9V90WYKYViAYQ06nEZEbV4eHwH-8rpGiQgrZoDkPGJ95RzW6e_Gphdr48wpgl1iifwV1vA1UxiRLIOH0FaNG61OKnApEGoj2oJ6mF0swOv_17xb4B09TxYFE6wigFyZnwv/s320/C1F6351E-40E7-4438-9B0F-4BD7E3788D3D.jpeg", n:"foto grupo 8", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjfP6MsJfBym1DEbcaWem9XcFFwCfcHzledMzn3AfkF0yAiftWGwp85vAnQtgKpeoDBz97wI_bamaHHkmPIANjHwKmLDlQfwCExNRMBiiuzUdwhURm4YrszUqmT_lvPoytRYDiiJpVzgGpywMSaYiidl1R5EvgtZw2tLwuMS8WYiWJiLAFCH5_qEoccNxhW/s320/E6736DE7-770A-4BE6-8E2E-71219F547DEA.jpeg", n:"foto grupo 9", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgDiqNCfrN-Rqt1cyI13sN8CpJwJdGL9SBK-nKwtA8PG0irBcyI1MpPEc4Tt3SFMLObWrZuhqhhgylzWaaYMJs_ERDeWT7K6cc62kj9JYEYvT8MZsk4iCE6Q8YgQy9y5mlKxT3GsVHETjkILGnwYEaeKz6B5N9RoAt2c3Blgmg8Hv5Ncejdkpd6yFuJtrb/s320/E64D3245-4521-44EE-9C1C-20DD1EDDEEBA.jpeg", n:"foto grupo 10", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjclC_90SoHjTTHugRI60D7u8p1Wz1x7Y9IHjcYRmIPgA9i37UvT1obzyzCxShjzVc26vqgXjbzlJwnW-OXrV4Ld_DP9e0ukscMyaekgIeRQackfvk-trgo9feAJ_6K9yh90f2pZ4AhhqF_7whWZ2k75f7bnLQkM5H8377PnE34W_msJeUJFCacM55pJD_k/s320/4253FADF-6B08-40CD-8E58-D240CFC5B9E6.jpeg", n:"foto grupo 11", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgh3CubfWcx1NTkhvtW6tXqmNgLN_8pJKWJesQJoh1w511X5r2xGmcpzSAJue5RgAGR5J9pH4ir_JGHdkQtd9XF9uz7z2eL7aoPpwHRAR5obiuYZxDk8XVkllDI0H8jZm0JhhFGDSRwqQ1Tr7XdLELJJsSEsAs4DzKP84NuGXfplvdFkJlPvCDBHab69jq0/s320/F8E4A44B-75D5-4B30-BA0B-C45F02C1F9F8.jpeg", n:"foto grupo 12", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiInh_o4bNHpGbDZzKI40aoLt7mIuPj2CjE2Sww-r2n7MDNb1LwC-LJwl11g6yoSSyHvY9RQz5fz7KKKL-S2NKic8vVlzpoHYCZxCOuLJQJSwyDJHzP4KkG9NWseGUWmvcUQTfCXtWw7HWgyaxaAoWwxRa5j-8WdwMbeRAMAEKczCFh2QJJIxNZWDOMwMOS/s320/3F97D5F3-456D-470B-A8DF-8131C6824749.jpeg", n:"foto grupo 13", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfhMv_5ILvCDdM85M8_nfEK88wKA7wu92IkN7PxdW6xjGzVWuhVWvuXfvoFcJjpQQ-X25VZcWuD-BsPcY2DsRgTgsZrT2xOetV0Ugwy_io7FyDI-4TR3P5Bery03Q_mE9-2B0o-e5_jfWoiMiZZcseEQ8pKwI7EOjatBUlKwv1K-ZQtKVz2EMerPM9Ie_a/s320/03DC75F5-B53C-41C1-984D-4DEF9D255402.jpeg", n:"foto grupo 14", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEge9DpCbVFc_Aytx8R5rSRl0toHupZQztiY2sQiiGsK7X8gn_1CSdUhAp-bvMit3j_YdP4-QwbrJqrPFQ1YbmYj64zbSsWinJw3NjD8_DoG-JYrihf7JhWrhFStGyn9Q4t6reLLApdGjUltTz-EY3RtN_6CPfWH95zXleNvveSoB1bK7tR_pZoePv_LbW68/s320/B5949866-06C8-420C-85EF-CCFB6D9941A2.jpeg", n:"foto grupo 15", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiiB97oHw02PfzPdLqlHMxcssBaGwcH0sSH5Q3HQ8q6SVVONMdAa8r4p5_odoYXz0Zt4niyhp1bMDHEMNCrODPK8ONHCuBK0B9vxmdFDlHbb2TwwEQdkcUCWQ2IvLC-yHXKJ87aPqcRoD-rOB0nqYbqONKd3rjPhX-v1FcIZQtCzTJOJHWnL4Se9w9tmhrN/s320/DD5A0ECC-0019-487B-9AFC-E44C184F8FD2.jpeg", n:"foto grupo 16", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjwJCvU2dNRzTPFXh0dcircSWGWKqtOudAkhPtw1oIXqcFiPHscOTCh5ArpXkU7ugyM2sfodlG-vHX1AluKI2A0vcFkbTVAlgOaeiHpn79u3Ml0lqZSGE6w3jDqAycAObRlXTMGsDNVE7sY-z6aNusTIuoP5pGNFaIcaluiojKnArp32fmqi45_i0ohhI3v/s320/1ECB2CBB-1A16-4569-9BA4-41B37D7C5C25.jpeg", n:"foto grupo 17", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg23PRoUW2Sw4kN1vsClmjVI7S9KyNS6TCC_EY0UBAqFJ9Xf7AJpaM9052tCKv3H2hrNAbDWNNBogWYf77ui1x6808JhiVyiicnl65h-sl-9bCvUarQXVzOiDzPs_JFEriVmyggPyYIUkG-0S9LghWgus5leYsbskASaXwGX-XDtHzawOUvtUN0SH9VV3EK/s320/4E2D8639-F176-41CB-8CCA-6201D24C90B5.jpeg", n:"foto grupo 18", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_5P7uHDcguQeDDrkuqoy7e6IGgeD73403qgW5rSpYkBlsmB2pyW91ByClX3woLqRsPGDwhHi8rDsakvm2vLKk_yFHw4pcxUfxXdaJ8-tJBjrEuxWpQm0mKZa-tcYqe877m6lN84fC6NvI12OoYkIeJ0Wq3d15yPF_NDOFtsKqc-q2Wx_oWR83kJL50OHC/s320/1645DCE8-2551-4C55-B5EE-507F473D9602.jpeg", n:"foto grupo 19", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJ-09gB4uwdUnd9fsOx5J6I9QGqCwFtb8adz1Vhyphenhyphen6gfp1zPAH1xAePXlbV_FX7qmHipDu8EJk8ZiV81G6bJEcEYopZFXeprUIWOqJgFyLQT1CzQThZdbDcBTh2KbjQ9-OlAyKiUruyzsOjeilxtPINHpAmWNWG5Y5CzB9AJ0KCnOu7IcHC8ce65TvNT397/s320/15CE6136-0E18-4C35-878B-6FA37E94524D.jpeg", n:"foto grupo 20", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhsU9l5VDPTzaV7XDGwyM49yWqGQwyr5oHMGdpETyeJAu6V7DLNZylsYL8RbRrhUl2iTBr23IPqGq8sUES4ZjQzmr4Z46C882n81YKREoIymO1aspTWx_eQMBbgM7UenQprpYydInmuv_p-dA5hyphenhyphenPlFrwdhQO1yYzu263L-83B8-yx8WeY9UAN7hyKXVxns/s320/E117F9C3-5DAE-48C1-BF37-E6692A0E7E07.jpeg", n:"foto grupo 21", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSQ8xYUaO9xiEIHkmIdis09Dh7H6CRQQesNo9VCEd9UhSRMe1uDHsvD1WjlYc5KJ-WEGaU4Y8gdk5yqGmhkdBqSXtFxpbdEjf6aoR_uAd5t0aPvBEisAl_rt3LIhqFJozfOANnyBtjH_24Y2QOy9wGCgws0pZWdSGcScNZ9OIYHh0ax0J_6V5M3bXXKwpa/s320/C3D6D206-CC22-458A-868C-ED65D84F710A.jpeg", n:"foto grupo 22", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLFu5gFqt2EM1dCD8_hxEdS5ROHaPmACY9bNSqpxuOYofKIihBCE-VnvaBI7DidQevV__Xnk_FGN0bwJ8BhwyZQLGdgKNT-mDZyblDuk9G4p30vsdnrHbqiCvHEZTGaWSnLfh8fLitouMfk5DPfSbw6-ikgSI0QGfTLUsuhqsxjP1dSe8DnLzmN7_WY3qe/s320/2F24420D-6992-4DC6-9C7B-C7A37482A76B.jpeg", n:"foto grupo 23", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiKFFoOolkjTQm6U09bKcvHbqWPuov5xnqMdl1G-4WcJBINHCsHAS7-LljcaD-L_12opbZrp2E7y4hdjPqNGakWxC9w7F3RI6liqpp5xCiMYJ_2LUMa4gB9VXUwMqWglteLa6VsY0acVFEYpXhWp200Ic95yQfEWh37p4E4ZQ0d5wLIuwjtp1ZrhprCo5u/s320/F8C2B199-4018-4A7F-A8E5-BC6EB753D206.jpeg", n:"foto grupo 24", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNh7Gq5oT39l5t12UJug54f4Iy14P5HeyqVYwtxnpNDGRGTTLh-ZB9gW3YqQISrJgesl8Ec-Sajq_TmhkrmJ66NY-tfgEmd-druP16HzrnbSCQ2AHEOhiKG4cfNMEy99blWzAIOBLyEEASYgrKGXDJkJFm8saw62UmC8HTr3aogjXJVSTmyPkz3aKwb5eP/s320/C136CE9D-8BF7-456D-BEF0-F46912C05A1D.jpeg", n:"foto grupo 25", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhYtv4sBOD4wnGJZo75njEmkz6poOT8xNRYWW9mHZsNciuCexBQuVQ_1d9o_aIvxTxZDzti7OSI8u1sIiO_81mSEFIVBI5JduiQ7IRPvTDZdwi1LioK66SWPq6knsC-iDVOphMZy-2KJXS74Eeqv7im46-CLOVs8exdTIjgISqhPZiLCCX0ckzi84lOu5GC/s320/A290F4C3-85AC-4ED6-9E2B-FA7FB3A2A3AE.jpeg", n:"foto grupo 26", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi74c2uxgKgFIUvRINeboidTRD2tTjuct-nvAH9gJCIzOh9hf4fJR5lMSqBvPio-M0vWG0DB7YNiO9LDyt-r2_l9BTSMwzqf0j1oQ7w8Tk4YGIOkqe0mqmONhQqVAWAlN8bjTclGjuE8_M_AtGlOw6PrMJLbWDoNkMCAp0A-ZAdtllyh_xIwqBKymxlyMS2/s320/A07D3D11-DD4D-446D-9974-89F904F15007.jpeg", n:"foto grupo 27", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhZySBM5_U0kWzOD8YUz8rZLvNq7oegIechwe068Gnbr5gks6UHbkXUKh76UScGK0oiIwu8JrsBSEkiCH1PHU6G6zXck_pJRjRFsaivAwSGicqATp8DWVgzsW0qdVNOakFeT1wbQEGG2QR1D5R0lFoJ4kqwuL-OLp9nYilD9q-Gu_2lxz6-n1s9sT5JLb_J/s320/14E0B89A-BE4F-4AA8-A90C-2E6CB8925CEE.jpeg", n:"foto grupo 28", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgrox6Wods7VfFTtXfkvYgWT4hL8iZtoCV5Jvd3M1u0o6oIA-HkK95qh5_NLnc0Dszf1K2lHGQIkmF_Ai-rpuCZ_SbGLISd_FsX6OikBD-wD0U6-ZNxFRT8TjsRJz_PUwWIEDupwth2VqZo9iVIzGn4CSCTLP9h9bi6yd0JUoZXyJ9lTwZleiu7Qcu3KNOy/s320/1F32C862-19CB-4E7F-99C3-D7AD3E248563.jpeg", n:"foto grupo 29", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiggEm2Jvijp0KJKbqXhKvFo_cujNd1KchmkvTFR5kWI7JDzpEjny3BKgEZxnNNDbenb4jSu6ZsW48X3eOQ6ZbhDqJiebHZ-pZeiiiPq9BAV5q4fneSCjFHyxHL4CMPaCUQe_lavIEhEhR76RBizCjKTHcD5Q7elldWZ1I6cO1y430DAVCZOFCwrtOOcxf4/s320/CF7E07B3-9485-4BE1-90F1-E6529867E953.jpeg", n:"foto grupo 30", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkqC8g3OBRmTF1-HmfNUxxtRh1LjoQQnvci9w04gUJmW9ze-tAsbqKcZIHGe7vfnyeLNuVY_rpAyqcJrHq7RqPTLPh3Tsv1Fc-IkgGBmsAvPDTjia6TYy7AiJ9riKI4V6dER0CXoNNW1PH8g2SoZiWXb24Qo2Nh49LMIxKwTCt0jx-MHWevxIrsFPVwQRQ/s320/0A2A4287-FE78-4205-A9FD-4DB65AC14588.jpeg", n:"foto grupo 31", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhwGENdZTH81r4w4ebxYrv44VLuVRoIyn9vAe5IJ6Bbq7KDObnXcBRlcf-YRg7QfUT6JNuSQtmpfE-CqMAnx1UQCFS3nv2l0XoTDKYDPLt7J2TDV-ZbQb-O7mkAKH32uvTqwXru4RiOqxblt_NwMl2pTivqp0yJAP9kz6gVgjoUEpRB7VzSoid9oQx4uCcx/s320/C2E0E0F9-C40A-4B77-A8A7-3969392FCD00.jpeg", n:"foto grupo 32", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgTPxZmOFaEF-PmhenmnoGQBc0sjf7Gv0jesasHE9YT94s2_AusnvTHqd_lFDqJhLy65swoFMve-WQDrNMchh-uYrLSFHrAxt73oaWvHncfH3uIawCMXblVWOt7PIignjmknqGEO7wqrd8WTUNnD0cNCSt9ngdls-RQeymBU0AecG35WaBZosl2i2kDXi1M/s320/3525476D-B540-4745-9329-30D673C83CC1.jpeg", n:"foto grupo 33", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiYPSEbQlq3VcpX2NN99_VDgQbCmKVSu3zgiD3ZCFXtKMVh-wT-Rqh-N02mDINPbE7b-tmD1Pm2lQ0YoHGoYu9oSGZVPnOhDDYhWpMg1F49DLPPtttfQihdZmahvS4-Hc5EUyEyrGe4x5mabETH8d4-LTvZWN2mKIbhApqO7DjuPNb99sHZ_RlGYMYUGJYQ/s320/CF757E34-8867-4A49-BB13-AAAB598A2CD5.jpeg", n:"foto grupo 34", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgETluehZRfGXiRKrCWbbH3SocFz-l0NQ4UmzwpaUnEuA6GRE9hYr2sA4d5oelit5VvZiYiUAfac4DmZhQVs7x48vQsAWjgKK19JLrPLkyAVX5xVf4WIJ4upyWcq0tVoVZcLtCVytdrzPXmPnGQ4_RfEGkGCiYW7woyR3hOq_k8tLbwv5AcAEkelcYnMQw/s320/CB4678FE-4D53-4772-8B1E-F457E79F8E77.jpeg", n:"foto grupo 35", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiNP6N73E5wbFqACoVeFTQwXtzi-_KMJoa2j0Qpx4lhbhpI3ZY-uIfvqf7beY8aQkasvwZbAPru7b3EJ5R6D4Mw24fwPSCCeIrD0sOxBTK24ikyX_bVXzd-QW8LtAebTu4TXS5M8vMZ0dytwXyRSMQ57Qq57kaLOBGTNInO96d6QduGWDnPtftfS4GOcvuO/s320/AF77211B-2279-4D82-B20B-73470ACF95D1.jpeg", n:"foto grupo 36", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhUKzD-lNy9pgmY7anJ_gI3bKbOqjSaTOMmu5VBFRWx2InZy7a5sRIrUOEjLYPvDIS2HQ6r1D-v4bge3BcAcLBavRJh-p6ZNg47uDQaJjHgCf7aBsH3pdhGxl5rBI85XZ0n66LlH-dIIA6GNa5oQYQvT6ppjnYmFdtp8j6WwQ06Jd5vaScj3DwxzkyGBsSA/s320/A9544960-52C1-44BC-A8D4-7123BBE9F67D.jpeg", n:"foto grupo 37", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiwCxeCdOhkNl4tRtIFLYNWYgz_h-WQKbSeSK3tq4S5HAiK9aTdHgCWSRFUajRKrWXTSYaUv-mLWAze_2t62nh8xfmdmv_Q-teVproklpJbMxrQ9UP6ObaQ_QERUUYLn2eEolMbuytNT_31SwhBhM-Eos32VCy1VczzeJ5MU-9todYqrhCHNsYehxwYD38M/s320/B28B5779-F318-47A6-A46E-78CA8DE03A2D.jpeg", n:"foto grupo 38", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2ZBeuLOQ_af6DxKwXa2O6m2YcwQzWNXa5eA0xKfFV74TUDGu4uKO-cYlUqempDoNWNwwXDhNx68xcLT0v_Cnydr9AqrjhT214mIlPYOqpa3HAN2oTtz5A3ugzoc_i_luB8L2PAvwiYWGjLdZtTJmNM2XlCuR-sLi_KfYjjRzrlHZ16E-ql0-hseX89aDD/s320/69BE071A-003B-498D-865A-DDFA155FEB40.jpeg", n:"foto grupo 39", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiPs-iYxIRdNrpiAV1x1D7aK-N6qMcq5Nizhnt1t15pgOx1NOLNp25lM9frbk_KG2HMdZicLD2vtFDukMpPmEJc6vCMQQ0mP0fR24Kq4fV761DeCWYJ0T2YyOGmaJt-CryMbEXdmg9EABjP-m8qCPVeuW2HVo3vWaiM4VWyKhgUZPfCZTljbViEvY8KBlS4/s320/BC42D3F0-1C0F-4951-B622-0BC42BE19DA1.jpeg", n:"foto grupo 40", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpIQfVq-fo1QwXPj4ti8o78ihiZEUs8bQkDipBqO5DoerLSQIfpKpy8ZpWvxoSZUVHPgnsaNM0Jxt-p2SrdkgkeznXuRhrebZjDbv9f9-eUd_uZIkZrqLHCK5LdJSDsDQFU33IA4BRV0JZ3yrDIgEgSh0jTraBCklWf3JHOVo7b649m3d9IuZ4vwTzNJD6/s320/A5BBA5CE-2959-401B-985D-66F77FBD7B3E.jpeg", n:"foto grupo 41", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIODs8KWAtc2TgpEVrgv_3DAV69nTDMFb9b1NSnQpw0uSeRMv28IZQueeJixE-Cng_5LJwGwiL2X28yLqWKvRYMpNC32oHK6SRp3zpWf3azIYmR6EK0orNqp1rZEapDQTdI3YBx6x9RTNMZhQmq0HVfwOZBaiHR1kakTcFIAzLGM5PQ3p9vhn9bzvzvzY0/s320/89C2CC43-A69E-4473-8F75-0BA087F58930.jpeg", n:"foto grupo 42", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiXpwGs2Ur-04KC0VmPf5EFjO2A7SUOrJClJG-thJPkXAG4_RFGB5E7n4BX6fqNntCck_YVP0RyClEd2k8S5h6KPi_SspWq_AP62rTPV3y7F78bGWlB8rqsk740nGLMmgzeKukz8JmceIvT6c2KkI_B0KWclATJ-5Q2C9csc58fRiNojLgFIq7CfiXHYXn/s320/0A84A6E3-7F47-43B1-9C70-16E4DDC8466E.jpeg", n:"foto grupo 43", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjmXwUqSbUw87_OSBqQlp_GbasZWEooqr8E9yMzx66JAOa9HU1MVlULgQ9jLdn8Vl5qiZ7fcLNSxcyvIMreBmbs3rI0RH5N9oly9IXJiSU4jc7Vfw7zMsdgbAVvHN3vsPrLFZubZt1uUGeuILKHJEbY_YS_UfeGhOTrqa7EITNz9NXnnjO5bNcizI9ePEBX/s320/D092468A-329E-4F7E-B297-49580B3383C4.jpeg", n:"foto grupo 44", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh73qwJQGMjyWHZ_gV6rFvfdyKlsqLTWMNdyEYzI-KDjikAX7YjxHcc7TzY1dnCE5fiwIBEnA6im8swh6_ZvQ_t_PsqRrcqcNrv9ALPrK1x59Z4cj1cLzy8rMFUQwKj86w8LYLpaH0Xn4l6euM7bKnCqpqIQxVU5JN-vnCCmjEzyNHCAxOi8dllvqHEHu8t/s320/01BFDE10-F1EC-45F2-BCD9-AB25C3C13F68.jpeg", n:"foto grupo 45", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPoWPgd7wWqF3RUo9Cf8d5AFsKZizF1-Ezq0HfPSwYdXiq4LKngLojVBzxjzKs-qpivLC6dy5c0705X8ugxSezjUcU9fv7nIGjFXtMI5dpBw84fs4We6ASyC4kRhz-06EW_ew6dPMLMwZzTjRuc2qjUsNsTfl-EwhGqlKABPpEGpOPFolDc9tvQN_C2BFj/s320/CCC599C7-9ED5-44CE-A3E9-9EEA5984E835.jpeg", n:"foto grupo 46", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEioQm8fL0ln9ixFaJXPRHbi3VwMeFVAUcd7fHG05pmhg2Vlr2zU8Ia5SHbX7P9tfRy0QgkBu2wCi2Z2pW0PWyHSFbfHbBdrsEQetlhLnF4LQl6rG7s0fUY6YBvteuZp0N6_BKCW9svB3cjrSRYsMUVoRd7FqKHWTPrMiw6_c5_rzYUdZj37_kzXlUYRQdoq/s320/CB41B994-CF68-4E07-8CA9-82A6C6EE37D4.jpeg", n:"foto grupo 47", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNmQNF-5zC3T2-sI5FEhulOofRKZewXz9Fd-knxRywoJAHlrgcUPU9OmM3vQPpwalGdOgHbqpsdaP2JsdtpW3cTVrKWuVz1oSxtHZ4rbEBmc40olwP1Qw1b-V5xudlq2GYeL-FK44jJqz4eoM9UXlyxdtBU2mhMiR_AmFHzYzZKn8a9ILfVBYicG-a7fwZ/s320/59731300-94BB-490A-9EC7-A8174521F08F.jpeg", n:"foto grupo 48", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjW1oziGqZxmU5TmUAN-InPEbwCFzRM1iK-Hp2vP6BMcf0nZ8VEfNWpx1beNKiPCX56PjjPmSquNwHAw9qNv_o3fwRgbrc3PeT9sdh7LHoJ2fI0d7JV2CdJ5h66Y_VWIGuNluKY95ewRRn56WI4MxVyfSTCC9a_K8pNKRpxRVvj-k0jJ4rdON0Cc_vPIpJg/s320/E06D2BA8-00F4-4377-B52C-019CEC718B87.jpeg", n:"foto grupo 49", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDwDnNTBhdvE-maHRYenETImVZ6XT8Ts4G1r_LmrIhB_Cfn0AM6efsOW_dPg7H0txv7VQVwIFAwMf3W2p4gZjFY8rQvppHFwcbe2JuviHowF9THJ3AaUjWtnBHGLxQr2Ur27898I3qbshTcTfXVLJ-ZM-Pemw3auoaTmEO1jLcdrvgW3FzYXwhYKDP1pMe/s320/1544D6D7-E321-4007-80E0-D63566C5291E.jpeg", n:"foto grupo 50", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiPtowRXEreDcmtk9WALDBtHVAJMZWLHTHhHnB8vJHgjAp-9_AoC8sXYHyhFwLt-qmlqxE7epqoUiEThrrfIN6UZztH9AWMJ_1H2ahul15gYx954XX_FppsbClnPLoYz6ZTCbP7vuH2GK6SMyO0S4XRIVQrKvsyQECAmyfCBOo99ksMqOulQlgmrFHCjquj/s320/3F6B901D-3526-4ECE-BA82-B957F4C2804A.jpeg", n:"foto grupo 51", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIkmp0nBiWiTj5ZVigQIGo2s3j2HGI0TbZOiELxfsucorFV1QoT80RZP2KZYAEZpiuQ7dFMsxQKDcM-zR1jXyo7nZELqHitVrZUwMGEnuG-squdhOJAS9AzoNgsEcB0Cqb8yQIPKdU3chqq7EH4-s3dFpYBoq155JMydCy2ULocdH8mo-dT9jTiZTAyG6l/s320/E5B8E7AC-59CF-451E-9D76-75A0E5D53ED2.jpeg", n:"foto grupo 52", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhlF4Ih7BrJy6icri7LyUfY_9wwPiTV7dagKeIbqFqVn5rYtYXwHzXSDHhtl8nLP30GnTRciMbR2H4Ws_JiktBF0gdi5xoa-lQ-kI1uyO5MBQXcTxcwoR6pXbBrCa_i_4PV1ykB-QWVICs4eXL-Mfqm7VaqP3iT6U4aLaMmbc5gTdGYmDxXsrd2y8cOKN-H/s320/A1988DB9-42A2-480D-BC75-9B85C743E9C6.jpeg", n:"foto grupo 53", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjaSpq6CfcLzP2ecXBbsi9b2TKjmtAyjdw6HjXVhSOLbMB7bf8anFfJvaPlg5LJLHq5grc8gWoV_4jFw5_Ll5RmGSZP9CvcTNvlt_P_XaA-D6u7F0hSb35yAhK0cXm0tsl-2tUaKAohU__9Z4256inoxu0qDh0bUTRiiLcOs69DBoyziPHvJnSP-FcVCozs/s320/172FE90B-8FFF-4333-BD3F-9F10F7FB9C9A.jpeg", n:"foto grupo 54", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh3CVQ2_B9XdcEaVP_Nd2wt9j9GtrGnG5u4bxgmetlzd-C-Xc2DNvmc9PxOBHdTBBWjoir17S0OYzqzMonHhZFqq7t3CE_sHMHJuKSeUeqPdobrBAeaiNleY9SnIpdMM7U4QFb-BQZM8xF_f67cZ1tRCipUUTGGANyLrYacDRe8qtY-ByGMl1TWgEQODZ-g/s320/CBB68613-A0DB-4BD8-BC25-C1C429ACB38D.jpeg", n:"foto grupo 55", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhyXP3OdChzFvxgvHfZWnqeeiB8eMrF00YznrNECSlrIfJ9M6hR90ITCHMMcdImRoGOI6qgh5rAhJYCmJzOSPRLEbq7lOW0S7Gr2Y6ZO_rEkOXbuuJPBq-PhjXbzKeCRQrOCnfVeqII3eWSnYF5etIG3ZdKTpOw3uZ7wp3YMEBRPq7JhRMPkC-o0KdHj8-Y/s320/CB3AEB99-BF19-43B7-97FF-932C42CD4F8B.jpeg", n:"foto grupo 56", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjTkLh8E5JLx5UON5V4wKHuqGip3eLcG8XyClya7mIlhZ9VFCTpKjepj29NoIxI7NDIlDazPxnCgTAH426sK6xR8ElgQwbGPcs1EWkqlM-AMeJngQlNyrtsZK5ghaYH9frcK5Vstt4iq_9cnWRqOPz0cgvvPA4R_q-CRGqfZ9Hl7_fU8SccMetFzg7aQKTL/s320/4D799DAF-5612-44D8-83E1-5E8FD6E1B4C1.jpeg", n:"foto grupo 57", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjsomf2JP5hiKx1CUzkyKPNAsW369Kj7iimJh0FghNkq1JU_C7PmndAf-Ls9BC1gLoHvE97ZXskdbnW06aPPHZCwEJ0x4WgoT768twF6knNEooUhyphenhyphen3V-ow6AULTPe42_XJcKDOJS0jhsgE28pVf7xcMhl69xzQFttGvDCM6rjZBdIKwFIOicvMgwsAaWoNW/s320/88FD1439-B86B-44CE-8EF4-0C64B260CB76.jpeg", n:"foto grupo 58", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiZ51I00oHfjPkhJK2cniTvsfPM8S2Sl9fBT_83ukVZNEuU_FUfULKeRHigQfTq38tIkR1XY1P2blYdPIovLM7Cig8DHcIttPUhbrOn7Yt0p68sNT9drVgSyPRl62FBMxuZuotz9D1ldRjSZFa1Gb7vz050ro7-BFugeGDgjE59GWaDi5yQ-o-hzN-6ihO6/s320/D6C78EC6-6980-4C60-AC70-E2E732CD62E9.jpeg", n:"foto grupo 59", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjsnTmyEY0nf7A5vACuJ5sinyh-5o5zV9VkXkMUrgVUlNPtBNHFWbGJjQ8eSG2fQiXVY7ooSy6T3LTv3IbKIg8xOra7wSVaAkS1Dl5c4nU9OJ0uOpiHurMS5N3lb-KXv4oETw9jTvu7n2xL-5nAjFHQGloTGweLmbCJnWH6r9Ih2mgxFW0q6tgE81GrcRny/s320/723324AD-5AAE-4090-A37A-74C57ECEF87B.jpeg", n:"foto grupo 60", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjxZJf8uWPNCKUXvt0uzmKEJvgwsJF1NF1qzuHLeofpa7iXYpRNlU6B5HYqoEGpBNGxrk09TEOlKejqZ-3gHzH5YW_YL-u26p77cFb2M87PKrEIgv6-OA5r9NADjbdAg3jSHZi-V2MEdL8y_ohIQPDlka9l-CB9FU-dMdNiA29kQJcyUxTbwPi5gITDvPmq/s320/97474AE0-ABAE-47D3-A7A3-7B4D88CFA5CE.jpeg", n:"foto grupo 61", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgAee6BTKUR9GG_GvZlq0JmrDWlD1HAXrv44mfbR__MDoPGvlzGbl9Ycyva3euDcVVntUDfk1GETV6EWJRkCLi6C94S9Qq3l1Gvu76IqLxsEufTHo6-YjuWm7rche2VopWbx6-PA6x_fG2s1vacsOwxRcVSqSHPfW169yPGrOhiKkeXeLk235ZnRXu7NJ0q/s320/CDA8EB5A-5677-4599-AA11-4988C3BEF3E8.jpeg", n:"foto grupo 62", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGhbQRsuda0OGhMeJnlqza-XisKYef8pQ2im8Xq8FY2G6lhb6-Cx-VFcJK-w6nMTJ35vcFCtHxp4Yzkq-uKACsKzzRzvijx7XCAJSYGtIPcAqYaeLdpFI8xuPhX0MQOOMp6eMdOo5sndnJF2jE3zDRI4iMmGZ-p-yjZ-WZoBFziVopK1MjQ-g_BZMy5n0L/s320/7A57EA41-8359-498E-A846-652761C6D193.jpeg", n:"foto grupo 63", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgKJNTVSHYkkRj8Ics2oHplri-Scm70pJ0nOTFuQ9JOYv3nLl09-qfCahzcvZ8WmT3iAZujzrqYg4VLmTHNiMBqJQhIYWt1L30GC7qzpfRdsX-yQJhsG6FkyBAx4tXy3UGisn-kKtcrEvYooGoAjbSsNr2OU1NhC3EsSf9tu2zRzvp35BdD4GTIcw90K8ii/s320/ECFD1465-1C10-4777-8464-69D7363C1795.jpeg", n:"foto grupo 64", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjV0Gd2aMYuPYr0GjuhmhyphenhyphenS-rXiMFZQ2ZGj9Iuzcc6pELB_ajB7eYdKwyf0pxG4N2wQo270CXiPGxBWe__FhKLW2zM2JEygrev6RIW3ZMQm1bYlFCG4La5OPoQn8x_HoplWkIFR4KORbQ_Z19WsoX4bwipEHGdvMx7n7Y193U1jiCiM4NnbpyUs6X4nAV8q/s320/AB10AD17-2DDD-444A-8347-DCF1FE6C9C1B.jpeg", n:"foto grupo 65", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQd2zwQyCW_P51OZSdntrJ-sdayIxkHA2ehPRzaUG1DT3o3umVGFtSYmWE5L8jVjaAR0vOKoACKDUwO4MUPgjLvuLU1NEI8c3HOJIkxqQFnxIASpZ6R2ALM7v62grRAg24S4ST9eknFGrhtNH88CNpYo9pB9z1vozSnCGjuwHau7cgxUN_tBd4QacyzsSW/s320/0024871C-B265-4C46-AD50-403792CF5255.jpeg", n:"foto grupo 66", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgodOlfYNUAP2VDR24NTNyXDxCRoOiHwnc5q-QDOnf1KdUn0GFMbfcvaP6XWcIbi2N_yFMd3Wlfx_kZDJuspLX3FZr2jMqF3ANCN8MOH9KRTZgloK5j6HSar9FZTIyRveV5pmXVQ6QkZM4_Y_Xo6MHzn5aDAgMUFu-0Wpr0aBN7dYGyghx174p6y7-N6fWG/s320/979D59A6-D0A2-4529-A743-E2C584FF0AC3.jpeg", n:"foto grupo 67", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgiFikI4UT2w9LkOPeW2RkHFkmJ6tTVx-88A1viENxj8yYEEl2Gl8j5QU7jWtHY9SgvP9M7Oew1fz_Yw0CYUffxG4GReuT_UWUoqPatcqBkG5GLABrgO65XmbuME7nmc0rbvi4bzBRIHGjzfbsVmQKIPYcsXSGCHBCstW0TQVgKyhVZeRAHj7ql2EeJLWuQ/s320/03ADECCC-BA9F-42CE-AAFC-F4AE0FD38ABF.jpeg", n:"foto grupo 68", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIKZyuXvTXWaXeoYKTS4hXoicnX-n9rF7E43KbWeliBEprPZ93QilIK6ldsAHBIKhSlrg4oFu65g90Y6-Q8aqK3YSD0jP0LHPKQpMRAxdpGG-ynoHUDybV-qYxNCDRwBv9BoNy0W7eqyfKxtx0sA6M8OJKvImvB6yxX4y2ZzainX65PntVmtmlxoTvhNGg/s320/2D4B0A2E-867D-4DD5-A80F-455AD478C1D6.jpeg", n:"foto grupo 69", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjjB4CatjBLCuUJ_mHqUZQyxwNURCMURONZhHju4ZZpGoShfGowUvWfWq30DlLM6fa1pk_yyC7slvtYQtiCp7isZSQuzKoDPIcD7Gy9VSEXsmfmCh2vsUTV6Ve0-MOsLoaucIPXLPIoTEjQWXb-u__VaTvOYHxar7SgwUsl7WGK5YyjkXZudbLCfPlwN9XH/s320/E7798939-4595-4594-BC7D-0B72E8FFC77F.jpeg", n:"foto grupo 70", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj9Li9J2adKw2VCnDXTEXN6GDYLojoqLB0bxTpw1W7gHxlRveDAPkt_QGtHNfdOIf4MLc_WH6YVVF8_B-mlzZpqj_Tu-x_Twhy4oJcczvKhBkDrFtExOgwGoWEkF4D-_dJfRZvfGEzkdtj3xUmzes9A0yCnkvIeHJIPsSdxyQ-s0zu_MDkhFtDtPCsm-WNH/s320/BCBBB1D7-7C13-4848-9FE7-85972D565333.jpeg", n:"foto grupo 71", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjpUwob9sfrxXNq18lfExVLjyctFfMC_pai_q99MvMVcGrDA5n2WyGhzYNBT9v5JiTrCErW5DbBXZXQ_2sb2poD6Figsk8tXfFAqFEelY250abqtChYZ1YGm8DLHDrzj9RMp63vXdFm2Z6QTBo1rbdrmZvRh0XkgXX0MdJ-lbzz7dh82i1QQDYnPF2b2VVt/s320/476CA7F5-182C-499F-B488-C8262B0FC338.jpeg", n:"foto grupo 72", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi2S8l1x4nRlG7sYFX0kbZnqnKql9jZ4NpcSNC3EOYdpTkcNYSiidQf1GJP6Ar2HAUD6L5nD8-f07nV6fMkk-83c5gAh9Sv4RKYOz1OJxbggLy-6y-qx3q3IGOnxNshzKVymspgZVCIOiT2su3S0CdVJNedkNXHx0Mk-VZ96oQ9d760u-orcixYmDsAfYXn/s320/1B89042E-D3C5-488B-A480-88D313E545CA.jpeg", n:"foto grupo 73", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEggVovLpVX9eRAoHdZSKbLeaWes7fRiOf9LxfeKtLLN7RG4vR7qGQk_c8jwci4Fu1vOjgQEMRjep6BuB97Ndjzf6WYZLaTxmlxehuCrtYRdQFzlMvvrghj_dhr96e2bcJAAnI5awiWN3QQDX7JqQeNq-78nXwD30BcVkFObOiA2jdj_BzvJtF6wPx_hIiVy/s320/00DE7D52-5D2A-4A8D-AD93-198E99407FE8.jpeg", n:"foto grupo 74", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgxgJRWpKLtPb7RM_dgReZm3iByV1nhslg9I427vmrF5bMXU_5JHaZjfScc0hP99rPU-w-6R8PEeUDHzclhFAHwkN05HzTZrMB4EiXs6WbkYP9fDT7sXPV8bCOqC_0dRhoYoLpmelzTS6xNGd4Ht4HFdDH4CBbEVm-jCfaPS_4NA5iS0MqUBfDnj8HHkhR7/s320/DF29F3F4-D9B2-4103-8D98-0AB48A5A1353.jpeg", n:"foto grupo 75", d:"3"},
-{u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIKF235aqIZbhwAyxH-pq6GHJmldj1a-zpglYLClYoS_eeL7gTb5sv3fEXF9qXwR_IfPfPNRpAaVWiJK5LJzg99howspB4N11zCbIZ7CNnnRNwMXgaPLLpQ40uwzsFKbt2KKXryjHgyVUnFJcb3askL9UASxXfWnLggtvbu6m-Vy3akGLyx9Tb6Sm6geIk/s320/47A22794-531F-44EC-A052-F222F87C8DB4.jpeg", n:"foto grupo 76", d:"3"},
-];
+    // Aquí podrías usar el array 'fotos' original. He optimizado la estructura.
+    const fotos = [
+        {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s320/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg", n:"grupo principal", d:"1"},
+        // ... (resto de tus fotos aquí)
+    ];
 
-function acceder() {
-    if(document.getElementById('pw').value === "Brighton2026") {
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('home').classList.remove('hidden');
+    // --- Lógica de Negocio ---
+
+    function acceder() {
+        const pass = document.getElementById('pw').value;
+        if(pass === CONFIG.password) {
+            document.getElementById('login').classList.add('hidden');
+            const main = document.getElementById('mainApp');
+            main.classList.remove('hidden');
+            setTimeout(() => main.classList.replace('opacity-0', 'opacity-100'), 50);
+            renderDays();
+        } else {
+            alert("Contraseña incorrecta");
+        }
     }
-}
 
-function busquedaRapida() {
-    const val = document.getElementById('busGlobal').value.toLowerCase();
-    const res = document.getElementById('resultadosBusqueda');
-    const grid = document.getElementById('gridBusqueda');
-    const seccionDias = document.getElementById('seccionDias');
-    if(val.length > 0) {
-        seccionDias.classList.add('hidden');
-        res.classList.remove('hidden');
-        const filtradas = fotos.filter(f => f.n.includes(val));
-        grid.innerHTML = filtradas.map(f => cardHTML(f)).join('');
-    } else {
-        seccionDias.classList.remove('hidden');
-        res.classList.add('hidden');
-    }
-}
-
-function verDia(dia) {
-    document.getElementById('home').classList.add('hidden');
-    document.getElementById('vistaDia').classList.remove('hidden');
-    document.getElementById('tituloDia').innerText = 'DÍA ' + dia;
-    const filtradas = fotos.filter(f => f.d === dia);
-    document.getElementById('gridFotosDia').innerHTML = filtradas.map(f => cardHTML(f)).join('');
-    window.scrollTo(0,0);
-}
-
-function volverHome() {
-    document.getElementById('vistaDia').classList.add('hidden');
-    document.getElementById('home').classList.remove('hidden');
-}
-
-function cardHTML(f) {
-    return `
-        <div class="glass p-2 rounded-[30px] border-white/5">
-            <img src="${f.u}" class="w-full h-72 object-cover rounded-[24px]" loading="lazy">
-            <div class="p-4 flex justify-between items-center text-[10px] font-bold text-white/40 uppercase tracking-widest">
-                <span># ${f.n}</span>
-                <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full">D1</span>
+    function renderDays() {
+        const container = document.getElementById('seccionDias');
+        container.innerHTML = CONFIG.days.map(d => `
+            <div onclick="verDia('${d}')" class="day-card glass h-80 rounded-[35px] relative overflow-hidden group cursor-pointer fade-in">
+                <img src="${fotos.find(f => f.d == d)?.u}" class="w-full h-full object-cover opacity-40 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent flex items-end p-8">
+                    <div>
+                        <p class="text-blue-400 font-bold text-sm tracking-widest mb-1">MEMORIAS</p>
+                        <h3 class="text-4xl font-black italic">DÍA 0${d}</h3>
+                    </div>
+                </div>
             </div>
-        </div>
-    `;
-}
+        `).join('');
+    }
+
+    function verDia(dia) {
+        document.getElementById('seccionDias').classList.add('hidden');
+        document.getElementById('vistaDetalle').classList.remove('hidden');
+        document.getElementById('tituloDia').innerText = `DÍA ${dia.padStart(2, '0')}`;
+        
+        const grid = document.getElementById('gridFotos');
+        const filtradas = fotos.filter(f => f.d == dia);
+        
+        grid.innerHTML = filtradas.map(f => `
+            <div class="foto-item skeleton fade-in" onclick="openLightbox('${f.u}', '${f.n}')">
+                <img src="${f.u}" loading="lazy" onload="this.parentElement.classList.remove('skeleton')">
+                <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="text-xs font-bold tracking-tighter uppercase">${f.n}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Buscador con Debounce (para evitar lag al escribir)
+    let timeoutBusqueda;
+    function debounceSearch() {
+        clearTimeout(timeoutBusqueda);
+        timeoutBusqueda = setTimeout(() => {
+            const query = document.getElementById('busGlobal').value.toLowerCase();
+            if(!query) {
+                volverHome();
+                return;
+            }
+            const resultados = fotos.filter(f => f.n.toLowerCase().includes(query) || f.d.includes(query));
+            mostrarResultados(resultados);
+        }, 300);
+    }
+
+    function mostrarResultados(res) {
+        document.getElementById('seccionDias').classList.add('hidden');
+        document.getElementById('vistaDetalle').classList.remove('hidden');
+        document.getElementById('tituloDia').innerText = "Resultados";
+        const grid = document.getElementById('gridFotos');
+        grid.innerHTML = res.map(f => `
+            <div class="foto-item fade-in" onclick="openLightbox('${f.u}', '${f.n}')">
+                <img src="${f.u}" loading="lazy">
+            </div>
+        `).join('');
+    }
+
+    function volverHome() {
+        document.getElementById('seccionDias').classList.remove('hidden');
+        document.getElementById('vistaDetalle').classList.add('hidden');
+        document.getElementById('busGlobal').value = "";
+    }
+
+    // Funciones del Lightbox
+    function openLightbox(url, caption) {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('imgFull').src = url;
+        document.getElementById('captionFull').innerText = caption;
+        lb.classList.remove('hidden');
+        lb.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        const lb = document.getElementById('lightbox');
+        lb.classList.add('hidden');
+        lb.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    }
 </script>
 </body>
 </html>
-
