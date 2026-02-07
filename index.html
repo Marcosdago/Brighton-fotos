@@ -3,167 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brighton 2026 | Galería Recuerdos</title>
+    <title>Brighton 2026 | Portfolio de Viaje</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         
         body { 
-            background: #020617; 
-            color: white; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            scroll-behavior: smooth;
+            background: radial-gradient(circle at top, #1e293b 0%, #020617 100%);
+            color: #f8fafc; 
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
         }
 
-        .glass { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(15px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .foto-card { 
-            aspect-ratio: 1/1; 
-            border-radius: 24px; 
-            overflow: hidden; 
-            cursor: pointer; 
-            position: relative; 
-            background: #0f172a; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        .photo-grid-item {
+            aspect-ratio: 3/4;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
         }
 
-        .foto-card:hover { 
-            transform: scale(1.02) translateY(-5px); 
-            border: 1px solid rgba(96, 165, 250, 0.5);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        .photo-grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s scale;
         }
 
-        .foto-card img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            transition: 0.6s ease; 
-            opacity: 0.8;
+        .photo-grid-item:hover img {
+            transform: scale(1.08);
         }
 
-        .foto-card:hover img { 
-            opacity: 1;
-            transform: scale(1.1); 
+        .day-card {
+            height: 400px;
+            border-radius: 24px;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
         }
 
-        .tag-ia { 
-            position: absolute; 
-            bottom: 12px; 
-            left: 12px; 
-            background: rgba(0, 0, 0, 0.7); 
-            backdrop-filter: blur(4px);
-            padding: 4px 10px; 
-            border-radius: 8px; 
-            font-size: 10px; 
-            font-weight: 700;
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            color: #60a5fa;
-            border: 1px solid rgba(255,255,255,0.1);
+        .day-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6);
+            transition: all 0.5s ease;
+        }
+
+        .day-card:hover img {
+            filter: brightness(0.9);
+            transform: scale(1.05);
         }
 
         .hidden { display: none !important; }
 
-        /* Estilo para el scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="antialiased">
 
-    <header class="container mx-auto px-6 py-16 text-center">
-        <h1 class="text-6xl md:text-8xl font-extrabold italic tracking-tighter bg-gradient-to-r from-blue-400 via-indigo-400 to-emerald-400 bg-clip-text text-transparent uppercase">
-            Brighton 2026
+    <header class="container mx-auto px-6 py-20 text-center">
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-4">
+            Brighton <span class="text-blue-500">2026</span>
         </h1>
-        <p class="text-slate-500 mt-6 tracking-[0.5em] text-xs uppercase font-bold">Álbum Digital de Momentos</p>
+        <div class="h-1 w-20 bg-blue-600 mx-auto rounded-full mb-6"></div>
+        <p class="text-slate-400 text-lg font-light max-w-xl mx-auto">
+            Una crónica visual de nuestra aventura. Sin distracciones, solo recuerdos.
+        </p>
     </header>
 
-    <main id="seccionDias" class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 pb-20">
+    <main id="seccionDias" class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pb-32">
         </main>
 
-    <section id="vistaDetalle" class="hidden container mx-auto px-6 pb-20">
-        <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">
-            <h2 id="tituloDia" class="text-5xl font-black italic uppercase tracking-tighter text-white"></h2>
-            <button onclick="volverHome()" class="px-8 py-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-all font-bold text-sm tracking-widest uppercase">
-                ← Volver a los días
+    <section id="vistaDetalle" class="hidden container mx-auto px-6 pb-32">
+        <div class="flex items-center justify-between mb-16">
+            <div>
+                <h2 id="tituloDia" class="text-4xl font-bold text-white mb-2"></h2>
+                <p class="text-blue-500 font-medium uppercase tracking-widest text-xs">Galería de Imágenes</p>
+            </div>
+            <button onclick="volverHome()" class="px-6 py-3 rounded-xl glass-card hover:bg-white/5 transition-all text-sm font-semibold">
+                ← VOLVER AL INICIO
             </button>
         </div>
         
-        <div id="gridFotos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div id="gridFotos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             </div>
     </section>
 
-    <div id="lightbox" class="fixed inset-0 bg-black/98 z-50 hidden flex-col items-center justify-center p-4 cursor-zoom-out" onclick="closeLightbox()">
-        <img id="imgFull" class="max-w-full max-h-[85vh] rounded-2xl shadow-2xl border border-white/10 transition-all duration-300">
-        <div class="mt-8 text-center">
-            <p id="captionIA" class="text-blue-400 font-bold tracking-widest text-sm uppercase"></p>
-            <p class="text-slate-500 text-xs mt-2 uppercase">Haz clic para cerrar</p>
-        </div>
+    <div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center p-4 lg:p-12" onclick="this.classList.add('hidden')">
+        <img id="imgFull" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
     </div>
 
 <script>
-// --- TU BASE DE DATOS DE FOTOS ---
-// He incluido las que me pasaste como base. 
-// Solo tienes que seguir pegando las demás aquí abajo.
 const fotosRaw = [
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s320/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhESVJFesVK8dwP6N9VKFcNV4LxIg2GkhbddgVZ3XFHz20TRymkW-FNb1R-bqcnpCjTvJFChAn5GnqBgPBLr0K_YoAW6bUnUQZPq_cQTb2H6qn7NSUxxBTiCP1EXXZ4YdHGZkSCxON7Vw8sZ02Yq47aCcUhUmqJYElFbyBaIeMqi0iEgWkMxdVpMUjxPSJ/s320/4146D8A4-1025-4805-B02C-D357A62DE0F9.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1gx1OCQ5yvq2V5ugEtwj3fF7cE07hVbQps1dDlKACKE_bP7btR5vpMrOMz_6XGG2del5Qnm1vbZh4dQNhFgu4bjyg1qvoZK8SAmsNnEHz2GmdiaSKKP5hx9wgIfhE4oOWRM9tfeaPTI177L2piYlIRQH6Pk8g59nlp9qF-fuBV0YqZP4Nucy_wmi_0qsQ/s320/FF175960-933A-476C-A98A-34ED15559B37.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjWBs0jxQz3nTIB73yf7DB5_fld5eZhOzIIBZFNp1Oxw_xwmGAcbwiyxlwlusq_GPTAZJ9kytAlDTB2gXtA-TKSfCgkO1Z_Hc2gGvXmvXUFQY6vduoFcKJa2EJPc8GWP8AKhimn6XPVbBwJjTZHm1K9dVMgBPHyg7CYKChAwp9h_ZbzIzcZMb99mr74BKfe/s320/B896A35F-B3C7-482D-923A-110F8BD75A21.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVeigEphaQI5jlzYK8_a2Po_lNC3z78Xw2SC90R7kVSvYVh7QOjktIBtk5w3hGMhKi3coXEjl3jQpg5tloGlDHDKiLfDV7GAZ6ySP3uG1wlYE_R_7mUdapKhPXgrZd9nqS3bcTrHQOdIi-kHjrvDfCd02hZIb_ssCeqDfDzMPrnxs90H9UtyThe16LWQxp/s320/0CF34E6D-7295-48CD-AE9A-C86433BAF50B.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhE3imMaj26LQcXkf7U_CFcvwTHMS_yw_oBpQRHLxZzp9cY2C-DZdsWzYaleR3rJCVWhtmHhSiCZQhC9bTsF2UaDo9FZBLU1llIqWvT8E_Kcfc5XS4ttj7Ov2OZz0tLUKJCaRoKeTLAQYDCEmB9YeRvxaZBLKgU8qK1PowZWpbCMm30to99d9nuV6Lre9OQ/s320/F249E71D-6DCF-4378-B3B4-9F45B0070D8C.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhg270_nakEVh-lsYAPcBcOZ9w8z0i2e3cs3YXqsYHL7PARTiqVUJtN3JUVGAsRdR7dGlBjToutb8hYIrpGucEF2BMueQ1mEYGRsa0HQi8mUr8dh9CTkru10WKvjPHh3xVfoQjZPDa6woagjMwxRGZK2qAXM24chpO9EwCA3LnRedyfJX_V3Rp69N4NcNUM/s320/3DEB9951-70A6-4854-841F-D712369F56EE.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipWBRKq8l6H11qcE4eMPhrnK51GW0vD7F0XiduUf-DS3zrJz1nXT_TwNEc0f-JSdRLEjyWzh6tDB3ywACPj4QitOmMqC-FQCxJmR_nUK3ys4X3Mlsrhyphenhyphenm2SzyACR9_91T5XNSPxtlT-f5cePYTmo6MQgJfxUZdseXgae2C1OINI3qDMVW3n1DS3WPq7zMW/s320/BDB19226-BC0D-42F9-9BB0-5A2B148352FC.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgI0NKABCo2Whc0A7azyTuZ4rmeviMfE4z9eyqaM81u6cMGFcZ7NlPPtX3sROdpGXNk61lIwBuE0cYH6PL6u9P95EgCYKwnpIg9z7Q3PMJH2ElC26HaiMfzjuUzUb2oYeDYdVUqQf6s7AHBK44XolN2G8oK6kIUZkcNLUlcCcXL7hP1EYbOuAu4-x4vaBYw/s320/F6C3EB8B-5BD9-4D71-B48F-21DCD78F6A9A.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyU6PUdrxwuuK4HW9oSZDgMuURNCIqjQ5SGjukBJWDZMzExkEDbSVa7JLN3nyO6RmtkCu3PaR3sFXlOkaULipP5jdaaLZjAbeiY4wrTNDp0aWL1nSlvSF4UY7_UakOVAAkPMIp1IYp-ISz40BGo5WPXwDk6YsAMFLzYhegyIXVnbkby4l6a6WRkeiYdnpS/s320/164F9C1F-B025-4A2B-B92E-2A10BD0B54A1.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitzPms6N0pDdICcxnqV208lUs42HZSl88kgdAH2nEtmrsn1wxoOFZEDfcIcvJs8G-bamr_15IlGTTgx0MA-XyGFezjYKvsgZka7L4EWPETBN7yX0xlUhSGM5XppS39tKvlztHdSh0wNuxzAKGvKFKrNzwjhwjpVdP8a5_hXo_IChb7OdeY4tnn0iprHcIE/s320/FF3DCAB1-CD8B-4E86-9D03-F794CD0DC762.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitwiyxNUjaVoxKeopuKLFZC9wgASMnmKhJXwcYFfwjON5-Dg7rMKay8ppkseiG5lzGdAsaMetCRUA7ADGtoLEYGMeMUIaT9NpqV3bEnC-q8ChLTi4vps8a9czHVyYpPqTUllfTlnkL0kZRntd1_rzl1JQMDgelCF7CnCqZCKjKJBJBEwKYSokELJXL2Sce/s320/B6D1C336-8721-4BBA-9684-7B047E076A01.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgXZQpKrTYJZA-OdSGEOs6JWkahI1MpvFee4El3jek53ta4ouwZfZT4U_gk7lIJ-mQAp8kDSV07DoWJZ-RSFGWCgqWfUgFlNlm9x-O5KKs0PCoapzOeWTpQo-LSBT0jFUoSbOeLjPpEPZkrb7OaZaAAHMZdEJXH5biAJGDBub4FJkilBqPH8e-wpxDs1T93/s320/0578CD01-9888-4FAC-9F6B-D97B76392663.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHMlYlnHA9wPFqjVDB9bN9UXYZ05IkQhO2MDJpUyUltDw-ScnhgNx3vBdSg1pqiCgQRcL5fJdlXXjqyRNWZCgQlViOhc2Aw_5AlNJaqtZDXerZavpR0iVjD7LwZkME131E56EE5XhI1SvXr7x_fqDcXaPD8-6PBLirvPsK0s1rCskKHlSzsIFK_mH36WDI/s320/0129FB86-649E-453B-9DA7-B45E0CEE2061.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjuTsd1Yvz-gwvCpgoOkUEpvAo5PAhGVNFnSV9E1pE6chFJmpFk_R2EtaaiO6bo8NeXkPixmElL5O5Qyusj1-McgCe1msWKR7cbhcASlcVB0zhWr_UUw3DUEZbTlzPSlHDe_qsDvllShr_8YyXw1mvLx256WIxYXBa9p-ciAhARasaBY5s3uG616GwnF5WR/s320/0B80ECBE-803F-44A5-8017-9DF9E108B7C9.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiBdgpbkLuVgX0V-xleX-DjnQiNhfrmr9kIsYWRBAQwKirAV1dAMFAnlTJMbVsB3AY3UM5FAM_tKo4GK9QqwF646YiaPgwUtcPxcBQCTFzZIMJQBDeb4nq2gI8xDVlbZ5gfxm8kEqVXqlqpI4zdnQbPP3ajXaYIzLLMLr17ZqHkP6tjQ539AtOePSEaHyK7/s320/9385969C-F471-4E1D-8C0C-787D84CEB3DA.jpeg", d:"1"},
+    // DÍA 1
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s1600/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhESVJFesVK8dwP6N9VKFcNV4LxIg2GkhbddgVZ3XFHz20TRymkW-FNb1R-bqcnpCjTvJFChAn5GnqBgPBLr0K_YoAW6bUnUQZPq_cQTb2H6qn7NSUxxBTiCP1EXXZ4YdHGZkSCxON7Vw8sZ02Yq47aCcUhUmqJYElFbyBaIeMqi0iEgWkMxdVpMUjxPSJ/s1600/4146D8A4-1025-4805-B02C-D357A62DE0F9.jpeg", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1gx1OCQ5yvq2V5ugEtwj3fF7cE07hVbQps1dDlKACKE_bP7btR5vpMrOMz_6XGG2del5Qnm1vbZh4dQNhFgu4bjyg1qvoZK8SAmsNnEHz2GmdiaSKKP5hx9wgIfhE4oOWRM9tfeaPTI177L2piYlIRQH6Pk8g59nlp9qF-fuBV0YqZP4Nucy_wmi_0qsQ/s1600/FF175960-933A-476C-A98A-34ED15559B37.jpeg", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjWBs0jxQz3nTIB73yf7DB5_fld5eZhOzIIBZFNp1Oxw_xwmGAcbwiyxlwlusq_GPTAZJ9kytAlDTB2gXtA-TKSfCgkO1Z_Hc2gGvXmvXUFQY6vduoFcKJa2EJPc8GWP8AKhimn6XPVbBwJjTZHm1K9dVMgBPHyg7CYKChAwp9h_ZbzIzcZMb99mr74BKfe/s1600/B896A35F-B3C7-482D-923A-110F8BD75A21.jpeg", d:"1"},
+    
+    // DÍA 2
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s1600/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg", d:"2"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiHq4RJ_eOpF-052SB64yrC9yAJAQDcNI6CkXt2rPibzgcO8tanaCh4kKw1cczwSwzevLHAktwlcuOsEyxRprKP42tx-XeXRYPyjZzJpeA81ixd7uCsPjxNuxfVkdhyphenhyphenoXaEO2Sb-ymSJAGB7cj037HFwhf-hVGPooRhAyYggbMUfQ7K6u5Op9NkFEc4ZKuT/s1600/291A9BFC-9F71-4837-A686-062E40370F9F.jpeg", d:"2"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgS-HStGYFaCBqgPlKn9iLDbymyxz0M6MLVNDp2xmVzOeNMcue5s-s9sU9virvipvKetfEiSD2PTLBWr8UssKNy6KTnO2ufI9mNKpW5d9ymYWPifGFZ1Fr1hjGvEstM8Sehixg2pUHrphxhKWalrwCfxxGGJSwezhR0lyw59O0MpGqZ6WTFDYoHwagDHEUa/s1600/8B3065F2-1A48-483E-B5F7-E35219B3C4CD.jpeg", d:"2"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVmIohySimgYXLE9B963EVTNmFkdq106YYawgbjxhNz6njOY3OTq7c16jQhiZVRSj6oQovCL_8bSYBppe9FxqB2DXrZTEqWHx4SD1d86qPX6gyTFnzH7jnqkn2chf57bdUqflrLdOY3l0rfpjm7b9Gp2wh2zBmTIOciQMa27IHy97eK7DoCWPLJmSoY_Yo/s1600/8DA828DF-B986-41FB-87FB-CB8A95F9A411.jpeg", d:"2"}
 ];
-
-// --- LÓGICA DE AUTO-ETIQUETADO (Simulación de IA) ---
-function autoEtiquetar(url) {
-    const palabras = ["Grupo", "Aventura", "Callejeando", "Recuerdo", "Risas", "Vistas", "Cena", "Vibes"];
-    // Creamos un código numérico basado en la URL
-    let hash = 0;
-    for (let i = 0; i < url.length; i++) {
-        hash = ((hash << 5) - hash) + url.charCodeAt(i);
-        hash |= 0; 
-    }
-    const indice = Math.abs(hash) % palabras.length;
-    const numero = Math.abs(hash % 99);
-    return `${palabras[indice]} #${numero}`;
-}
-
-// Procesamos las fotos para añadirles su etiqueta IA
-const fotos = fotosRaw.map(f => ({...f, n: autoEtiquetar(f.u)}));
-
-// --- MOTOR DE LA GALERÍA ---
 
 function renderHome() {
     const container = document.getElementById('seccionDias');
-    const diasUnicos = [...new Set(fotos.map(f => f.d))].sort();
+    const dias = [...new Set(fotosRaw.map(f => f.d))].sort();
     
-    container.innerHTML = diasUnicos.map(d => {
-        const fotoPortada = fotos.find(f => f.d === d).u;
+    container.innerHTML = dias.map(d => {
+        const portada = fotosRaw.find(f => f.d === d).u;
         return `
-            <div onclick="verDia('${d}')" class="foto-card glass group">
-                <img src="${fotoPortada}" class="opacity-50 group-hover:opacity-100">
-                <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                    <span class="text-[10px] tracking-[0.5em] font-bold opacity-50 mb-2 uppercase">Ver momentos</span>
-                    <h3 class="text-5xl font-extrabold italic tracking-tighter uppercase">Día ${d}</h3>
+            <div onclick="verDia('${d}')" class="day-card group">
+                <img src="${portada}" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8">
+                    <span class="text-blue-500 text-xs font-bold tracking-[0.3em] uppercase mb-2">Explorar álbum</span>
+                    <h3 class="text-4xl font-bold text-white uppercase">Día ${d}</h3>
                 </div>
-            </div>
-        `;
+            </div>`;
     }).join('');
 }
 
@@ -173,15 +142,10 @@ function verDia(dia) {
     document.getElementById('tituloDia').innerText = "Día " + dia;
     
     const grid = document.getElementById('gridFotos');
-    const filtradas = fotos.filter(f => f.d === dia);
-    
-    grid.innerHTML = filtradas.map(f => `
-        <div class="foto-card" onclick="openLightbox('${f.u}', '${f.n}')">
+    grid.innerHTML = fotosRaw.filter(f => f.d === dia).map(f => `
+        <div class="photo-grid-item" onclick="openLightbox('${f.u}')">
             <img src="${f.u}" loading="lazy">
-            <span class="tag-ia">${f.n}</span>
-        </div>
-    `).join('');
-    
+        </div>`).join('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -191,20 +155,11 @@ function volverHome() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function openLightbox(url, tag) {
-    const lb = document.getElementById('lightbox');
-    const img = document.getElementById('imgFull');
-    // IA: Cambia automáticamente miniatura por alta resolución
-    img.src = url.replace('/s320/', '/s1600/');
-    document.getElementById('captionIA').innerText = "Etiqueta IA: " + tag;
-    lb.classList.replace('hidden', 'flex');
+function openLightbox(url) {
+    document.getElementById('imgFull').src = url;
+    document.getElementById('lightbox').classList.remove('hidden');
 }
 
-function closeLightbox() {
-    document.getElementById('lightbox').classList.replace('flex', 'hidden');
-}
-
-// Inicializar la aplicación
 renderHome();
 </script>
 </body>
