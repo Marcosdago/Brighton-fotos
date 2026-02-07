@@ -3,113 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brighton 2026 | Memoria Visual</title>
+    <title>Brighton 2026 | Memory Box</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
         body { 
-            background-color: #f1f5f9; /* Fondo gris muy claro para contraste profesional */
-            color: #1e293b; 
+            background-color: #f8fafc; /* Fondo neutro premium */
+            color: #0f172a; 
             font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
         }
 
-        /* Tarjetas estilo Apple/Moderno */
-        .glass-card {
+        /* Estilo exacto de la previsualización */
+        .card-brighton {
             background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 32px; /* Bordes muy redondeados como en la imagen */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid #f1f5f9;
         }
 
-        .glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        .card-brighton:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
         }
 
-        .photo-thumb {
-            aspect-ratio: 1/1;
+        .img-container {
+            width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border-radius: 16px;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
         }
 
-        .day-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: -0.025em;
+        .card-brighton:hover .img-container img {
+            transform: scale(1.05);
+        }
+
+        /* Botones estilo Apple */
+        .btn-ios {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .btn-ios:hover {
+            background: #f1f5f9;
             color: #0f172a;
         }
 
-        .btn-primary {
-            background: #2563eb;
+        .btn-blue {
+            background: #3b82f6;
             color: white;
             padding: 10px 24px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            transition: all 0.2s;
         }
 
-        .btn-primary:hover {
-            background: #1d4ed8;
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        .btn-blue:hover {
+            background: #2563eb;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
 
         .hidden { display: none !important; }
-
-        /* Estilo para las fotos en el grid */
-        .photo-item {
-            background: white;
-            padding: 12px;
-            border-radius: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="antialiased p-6 md:p-12">
 
-    <header class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-        <div>
-            <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight">
-                Brighton <span class="text-blue-600">2026</span>
+    <header class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-16 gap-8">
+        <div class="text-center md:text-left">
+            <h1 class="text-5xl font-extrabold tracking-tight text-slate-900">
+                Brighton <span class="text-blue-500">2026</span>
             </h1>
-            <p class="text-slate-500 mt-2 text-lg">Un viaje inolvidable</p>
+            <p class="text-slate-400 font-medium text-lg mt-1">Un viaje inolvidable</p>
         </div>
-        <div id="nav-controls" class="flex gap-3">
-            <button onclick="volverHome()" id="btn-back" class="hidden px-5 py-2.5 rounded-xl bg-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-300 transition-all">
-                ← VOLVER
-            </button>
-            <button class="btn-primary text-sm">Descargar Todo</button>
+        <div class="flex gap-3">
+            <button onclick="volverHome()" id="btnVolver" class="hidden btn-ios">← Volver a Home</button>
+            <button class="btn-blue">Obtener Todo</button>
         </div>
     </header>
 
-    <main id="seccionDias" class="max-w-6xl mx-auto">
-        <h2 class="text-xl font-bold text-slate-400 uppercase tracking-widest mb-8">Selección de Días</h2>
-        <div id="gridDias" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+    <hr class="max-w-7xl mx-auto border-slate-200 mb-12">
+
+    <main id="home" class="max-w-7xl mx-auto">
+        <h2 class="text-2xl font-bold text-slate-800 mb-8">Selección de Días</h2>
+        <div id="gridDias" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             </div>
     </main>
 
-    <section id="vistaDetalle" class="max-w-6xl mx-auto hidden">
-        <h2 id="tituloDia" class="day-title mb-8"></h2>
-        <div id="gridFotos" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <section id="detalle" class="max-w-7xl mx-auto hidden">
+        <div class="flex items-center gap-4 mb-10">
+            <h2 id="tituloDia" class="text-4xl font-extrabold text-slate-900"></h2>
+            <span class="bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 rounded-full">GRID FOTOS</span>
+        </div>
+        <div id="gridFotos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             </div>
     </section>
 
-    <div id="lightbox" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-6" onclick="this.classList.add('hidden')">
-        <img id="imgFull" class="max-w-full max-h-full rounded-3xl shadow-2xl">
+    <div id="lightbox" class="fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-6" onclick="this.classList.add('hidden')">
+        <img id="imgFull" class="max-w-full max-h-full rounded-3xl shadow-2xl border-4 border-white/10">
     </div>
 
 <script>
 const fotosRaw = [
-    // DÍA 1
     {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s1600/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg", d:"1"},
     {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhESVJFesVK8dwP6N9VKFcNV4LxIg2GkhbddgVZ3XFHz20TRymkW-FNb1R-bqcnpCjTvJFChAn5GnqBgPBLr0K_YoAW6bUnUQZPq_cQTb2H6qn7NSUxxBTiCP1EXXZ4YdHGZkSCxON7Vw8sZ02Yq47aCcUhUmqJYElFbyBaIeMqi0iEgWkMxdVpMUjxPSJ/s1600/4146D8A4-1025-4805-B02C-D357A62DE0F9.jpeg", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1gx1OCQ5yvq2V5ugEtwj3fF7cE07hVbQps1dDlKACKE_bP7btR5vpMrOMz_6XGG2del5Qnm1vbZh4dQNhFgu4bjyg1qvoZK8SAmsNnEHz2GmdiaSKKP5hx9wgIfhE4oOWRM9tfeaPTI177L2piYlIRQH6Pk8g59nlp9qF-fuBV0YqZP4Nucy_wmi_0qsQ/s1600/FF175960-933A-476C-A98A-34ED15559B37.jpeg", d:"1"},
-    // DÍA 2
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s1600/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg", d:"2"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiHq4RJ_eOpF-052SB64yrC9yAJAQDcNI6CkXt2rPibzgcO8tanaCh4kKw1cczwSwzevLHAktwlcuOsEyxRprKP42tx-XeXRYPyjZzJpeA81ixd7uCsPjxNuxfVkdhyphenhyphenoXaEO2Sb-ymSJAGB7cj037HFwhf-hVGPooRhAyYggbMUfQ7K6u5Op9NkFEc4ZKuT/s1600/291A9BFC-9F71-4837-A686-062E40370F9F.jpeg", d:"2"}
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s1600/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg", d:"2"}
 ];
 
 function renderHome() {
@@ -117,43 +130,53 @@ function renderHome() {
     const dias = [...new Set(fotosRaw.map(f => f.d))].sort();
     
     container.innerHTML = dias.map(d => {
-        const portada = fotosRaw.find(f => f.d === d).u;
+        const p = fotosRaw.find(f => f.d === d).u;
         return `
-            <div onclick="verDia('${d}')" class="glass-card p-6 cursor-pointer">
-                <img src="${portada}" class="photo-thumb mb-6 w-full shadow-inner">
-                <h3 class="text-2xl font-bold text-slate-800">DÍA ${d}</h3>
-                <p class="text-slate-400 text-sm mt-1 uppercase font-semibold tracking-wider">Ver álbum completo</p>
+            <div onclick="verDia('${d}')" class="card-brighton p-5 cursor-pointer">
+                <div class="img-container mb-6">
+                    <img src="${p}" loading="lazy">
+                </div>
+                <div class="flex justify-between items-center px-2">
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800 uppercase">Día ${d}</h3>
+                        <p class="text-slate-400 text-sm font-medium">Click para abrir</p>
+                    </div>
+                    <div class="h-12 w-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">→</div>
+                </div>
             </div>`;
     }).join('');
 }
 
 function verDia(dia) {
-    document.getElementById('seccionDias').classList.add('hidden');
-    document.getElementById('vistaDetalle').classList.remove('hidden');
-    document.getElementById('btn-back').classList.remove('hidden');
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('detalle').classList.remove('hidden');
+    document.getElementById('btnVolver').classList.remove('hidden');
     document.getElementById('tituloDia').innerText = "Día " + dia;
     
     const grid = document.getElementById('gridFotos');
     grid.innerHTML = fotosRaw.filter(f => f.d === dia).map(f => `
-        <div class="photo-item cursor-pointer" onclick="openLightbox('${f.u}')">
-            <img src="${f.u}" class="rounded-xl w-full hover:opacity-90 transition-opacity">
+        <div class="card-brighton p-3 cursor-pointer" onclick="openLightbox('${f.u}')">
+            <div class="img-container aspect-square rounded-2xl">
+                <img src="${f.u}" loading="lazy">
+            </div>
         </div>`).join('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function volverHome() {
-    document.getElementById('seccionDias').classList.remove('hidden');
-    document.getElementById('vistaDetalle').classList.add('hidden');
-    document.getElementById('btn-back').classList.add('hidden');
+    document.getElementById('home').classList.remove('hidden');
+    document.getElementById('detalle').classList.add('hidden');
+    document.getElementById('btnVolver').classList.add('hidden');
 }
 
 function openLightbox(url) {
     document.getElementById('imgFull').src = url;
-    document.getElementById('lightbox').classList.remove('hidden');
+    document.getElementById('lightbox').classList.replace('hidden', 'flex');
 }
 
 renderHome();
 </script>
 </body>
 </html>
+
 
