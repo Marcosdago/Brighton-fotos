@@ -1,99 +1,153 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brighton 2026 | Galería VIP</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-    body { background: radial-gradient(circle, #1e293b 0%, #020617 100%); min-height: 100vh; color: white; font-family: 'Inter', sans-serif; }
-    .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .foto-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .foto-card:hover { transform: translateY(-10px) scale(1.02); }
-    img { width: 100%; height: 300px; object-fit: cover; border-radius: 12px; }
-    .nav-btn { padding: 8px 16px; border-radius: 20px; transition: 0.3s; cursor: pointer; border: 1px solid transparent; }
-    .nav-btn:hover, .nav-btn.active { background: #3b82f6; border-color: #60a5fa; }
-    .hidden { display: none !important; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brighton 24 | Galería Oficial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
+        body { background: #020617; color: white; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .day-card { height: 320px; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; border-radius: 35px; }
+        .day-card:hover { transform: translateY(-10px); border-color: #3b82f6; box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2); }
+        .day-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: 0.6s; }
+        .day-card:hover img { opacity: 0.7; scale: 1.1; }
+        .foto-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+        .hidden { display: none !important; }
+        input::placeholder { color: rgba(255,255,255,0.2); }
+    </style>
 </head>
 <body>
 
-<div id="login" class="fixed inset-0 flex items-center justify-center z-50 p-4 bg-slate-950">
-    <div class="glass p-10 rounded-3xl shadow-2xl text-center w-full max-w-sm">
-        <div class="text-4xl mb-4">🔐</div>
-        <h2 class="text-xl font-light tracking-widest mb-6 uppercase">Acceso Restringido</h2>
-        <input type="password" id="pw" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl mb-4 text-center focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="Introduce la contraseña">
-        <button onclick="acceder()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold tracking-tight shadow-lg shadow-blue-900/20 transition-all">DESBLOQUEAR</button>
-        <p id="error" class="text-red-400 mt-4 text-sm hidden uppercase tracking-tighter">Clave incorrecta</p>
+<div id="login" class="fixed inset-0 flex items-center justify-center z-[100] bg-slate-950 p-6">
+    <div class="glass p-10 rounded-[40px] text-center w-full max-w-sm border-white/5">
+        <h2 class="text-2xl font-bold mb-6 italic tracking-tighter text-blue-400 uppercase">Brighton '24</h2>
+        <input type="password" id="pw" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-4 text-center outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Contraseña">
+        <button onclick="acceder()" class="w-full bg-blue-600 py-4 rounded-2xl font-bold hover:bg-blue-500 shadow-lg shadow-blue-900/30 transition-all active:scale-95">ENTRAR</button>
     </div>
 </div>
 
-<div id="app" class="hidden">
-    <nav class="glass sticky top-0 z-40 px-6 py-4 flex flex-wrap justify-center gap-4 mb-8">
-        <div onclick="filtrarDia('todos')" class="nav-btn active" id="btn-todos">Todos</div>
-        <div onclick="filtrarDia('1')" class="nav-btn" id="btn-1">Día 1</div>
-        <div onclick="filtrarDia('2')" class="nav-btn" id="btn-2">Día 2</div>
-        <div onclick="filtrarDia('3')" class="nav-btn" id="btn-3">Día 3</div>
-    </nav>
-
-    <div class="container mx-auto px-4 pb-20">
-        <header class="text-center mb-12">
-            <h1 class="text-5xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">BRIGHTON 2024</h1>
-            <p class="text-slate-400 mt-2 uppercase tracking-widest text-xs">Recuerdos de un viaje inolvidable</p>
-        </header>
-
-        <div class="max-w-xl mx-auto mb-12">
-            <input type="text" id="bus" onkeyup="buscarNombre()" class="glass w-full p-5 rounded-2xl text-center text-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="🔍 Escribe un nombre (Sara, Carmen...)">
+<div id="home" class="hidden container mx-auto px-6 py-12">
+    <header class="text-center mb-16">
+        <h1 class="text-6xl font-black italic tracking-tighter mb-4 bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">GALERÍA</h1>
+        <div class="max-w-xl mx-auto mt-8">
+            <input type="text" id="busGlobal" onkeyup="busquedaRapida()" 
+                   class="glass w-full p-6 rounded-3xl text-center text-xl outline-none focus:ring-2 focus:ring-blue-600 shadow-2xl" 
+                   placeholder="🔍 Busca a alguien...">
         </div>
+    </header>
 
-        <div id="gal" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    <div id="seccionDias" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div onclick="verDia('1')" class="day-card glass">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s320/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg">
+            <div class="absolute inset-0 flex items-end p-8 bg-gradient-to-t from-black/80 to-transparent">
+                <h3 class="text-4xl font-black italic">DÍA 01</h3>
+            </div>
+        </div>
+        <div onclick="verDia('2')" class="day-card glass">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s320/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg">
+            <div class="absolute inset-0 flex items-end p-8 bg-gradient-to-t from-black/80 to-transparent">
+                <h3 class="text-4xl font-black italic">DÍA 02</h3>
+            </div>
+        </div>
+        <div onclick="verDia('3')" class="day-card glass">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEht5UQWCB3_Is31jwNS365b9iQj9ZRBvzZZRkm0VAfE-LiguKIV_zguNJ3IEBFO427GkaxaySByPsWMK_hy5A2fUBawkTBvs51cYLZb6NbRJlvFYcc-yz8VRQJflaUwX0x66zX6dcWUzgujLsgKAkmrnSOumRBOp1FFgYqgcIfREj4-dOJsCRKS4Ya_wDE3/s320/46F94A7A-EE05-4B47-8960-ACA807D104AA.jpeg">
+            <div class="absolute inset-0 flex items-end p-8 bg-gradient-to-t from-black/80 to-transparent">
+                <h3 class="text-4xl font-black italic">DÍA 03</h3>
+            </div>
+        </div>
     </div>
+
+    <div id="resultadosBusqueda" class="hidden mt-12">
+        <div id="gridBusqueda" class="foto-grid"></div>
+    </div>
+</div>
+
+<div id="vistaDia" class="hidden container mx-auto px-6 py-12">
+    <button onclick="volverHome()" class="mb-10 flex items-center gap-2 text-blue-500 font-bold hover:text-blue-400 transition-colors">
+        <span class="text-2xl">←</span> VOLVER ATRÁS
+    </button>
+    <h1 id="tituloDia" class="text-6xl font-black mb-12 italic uppercase"></h1>
+    <div id="gridFotosDia" class="foto-grid"></div>
 </div>
 
 <script>
-// Base de datos (u=url, n=nombres, d=dia)
 const fotos = [
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYJZsn9Ypr11RvNTIawhFovmF8nJDQRYHfrmeFJxQR-2XFJK417WrbfcFQs47MjmlO_hlcpSV3juiTgPfmrGHD1Dnw7ICqE0-DGd0xrtunQznZfgLpPqGLEBloCAWBL0ZZ0g05cNQhltoKUjwHpk0pOlVQS8YVPGewDtZ2dgwto-K7GgO9kkf-tmr-ZBja/s1600/C9FB9E38-2A74-4B8A-B86F-CF28B20DA7A2.jpeg", n:"carmen", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhoNpDPUBcWGllMslk7gvsRbXMfvgbWyD7jiV8SRB0AmT_8NUWOILexnQF_yfDB0VTJ49aPPGVIceD1O-BJh3g2gKLXYTZ6l2QudQ4HSTTGmM0OghAElTV15OMlDJ-dKV89YpLH0loBJCLX8DAEf9EEp3aaEQD01fzeBgr0j2pXLuZyx3UNa0F8IWEQW117/s1600/9C90207A-0289-4BB0-B695-6655770537E4.jpeg", n:"sara claudia leire rocio", d:"2"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjoFE691nXM8aZCiFpwfbLw23zf2Rx5wtXLIyBX5Gs-pg9t_KpF9dxr55XOeEVrga9F45iF17Fi-AuoHCXZQaQLJRJlYpwMy1SVGQ-eooKX4DzaWphJzVtyGIQwehVs5nmiNLEx4nZB7ebqlay36W-DUvAAINTloPzGXc-aEtLiCrnZCNhmwcelrRSqMbyF/s1600/7ECEBCFC-1743-4FE1-8214-B9BBCC134B75.jpeg", n:"sara", d:"1"},
-    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEht5UQWCB3_Is31jwNS365b9i (se acortó aquí para el ejemplo, pon las tuyas)", n:"rocio claudia", d:"3"}
+    // --- DÍA 1 ---
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s320/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg", n:"grupo", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhESVJFesVK8dwP6N9VKFcNV4LxIg2GkhbddgVZ3XFHz20TRymkW-FNb1R-bqcnpCjTvJFChAn5GnqBgPBLr0K_YoAW6bUnUQZPq_cQTb2H6qn7NSUxxBTiCP1EXXZ4YdHGZkSCxON7Vw8sZ02Yq47aCcUhUmqJYElFbyBaIeMqi0iEgWkMxdVpMUjxPSJ/s320/4146D8A4-1025-4805-B02C-D357A62DE0F9.jpeg", n:"amigos", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1gx1OCQ5yvq2V5ugEtwj3fF7cE07hVbQps1dDlKACKE_bP7btR5vpMrOMz_6XGG2del5Qnm1vbZh4dQNhFgu4bjyg1qvoZK8SAmsNnEHz2GmdiaSKKP5hx9wgIfhE4oOWRM9tfeaPTI177L2piYlIRQH6Pk8g59nlp9qF-fuBV0YqZP4Nucy_wmi_0qsQ/s320/FF175960-933A-476C-A98A-34ED15559B37.jpeg", n:"viaje", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjWBs0jxQz3nTIB73yf7DB5_fld5eZhOzIIBZFNp1Oxw_xwmGAcbwiyxlwlusq_GPTAZJ9kytAlDTB2gXtA-TKSfCgkO1Z_Hc2gGvXmvXUFQY6vduoFcKJa2EJPc8GWP8AKhimn6XPVbBwJjTZHm1K9dVMgBPHyg7CYKChAwp9h_ZbzIzcZMb99mr74BKfe/s320/B896A35F-B3C7-482D-923A-110F8BD75A21.jpeg", n:"calle", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVeigEphaQI5jlzYK8_a2Po_lNC3z78Xw2SC90R7kVSvYVh7QOjktIBtk5w3hGMhKi3coXEjl3jQpg5tloGlDHDKiLfDV7GAZ6ySP3uG1wlYE_R_7mUdapKhPXgrZd9nqS3bcTrHQOdIi-kHjrvDfCd02hZIb_ssCeqDfDzMPrnxs90H9UtyThe16LWQxp/s320/0CF34E6D-7295-48CD-AE9A-C86433BAF50B.jpeg", n:"risas", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhE3imMaj26LQcXkf7U_CFcvwTHMS_yw_oBpQRHLxZzp9cY2C-DZdsWzYaleR3rJCVWhtmHhSiCZQhC9bTsF2UaDo9FZBLU1llIqWvT8E_Kcfc5XS4ttj7Ov2OZz0tLUKJCaRoKeTLAQYDCEmB9YeRvxaZBLKgU8qK1PowZWpbCMm30to99d9nuV6Lre9OQ/s320/F249E71D-6DCF-4378-B3B4-9F45B0070D8C.jpeg", n:"grupo2", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhg270_nakEVh-lsYAPcBcOZ9w8z0i2e3cs3YXqsYHL7PARTiqVUJtN3JUVGAsRdR7dGlBjToutb8hYIrpGucEF2BMueQ1mEYGRsa0HQi8mUr8dh9CTkru10WKvjPHh3xVfoQjZPDa6woagjMwxRGZK2qAXM24chpO9EwCA3LnRedyfJX_V3Rp69N4NcNUM/s320/3DEB9951-70A6-4854-841F-D712369F56EE.jpeg", n:"paseo", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipWBRKq8l6H11qcE4eMPhrnK51GW0vD7F0XiduUf-DS3zrJz1nXT_TwNEc0f-JSdRLEjyWzh6tDB3ywACPj4QitOmMqC-FQCxJmR_nUK3ys4X3Mlsrhyphenhyphenm2SzyACR9_91T5XNSPxtlT-f5cePYTmo6MQgJfxUZdseXgae2C1OINI3qDMVW3n1DS3WPq7zMW/s320/BDB19226-BC0D-42F9-9BB0-5A2B148352FC.jpeg", n:"noche", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgI0NKABCo2Whc0A7azyTuZ4rmeviMfE4z9eyqaM81u6cMGFcZ7NlPPtX3sROdpGXNk61lIwBuE0cYH6PL6u9P95EgCYKwnpIg9z7Q3PMJH2ElC26HaiMfzjuUzUb2oYeDYdVUqQf6s7AHBK44XolN2G8oK6kIUZkcNLUlcCcXL7hP1EYbOuAu4-x4vaBYw/s320/F6C3EB8B-5BD9-4D71-B48F-21DCD78F6A9A.jpeg", n:"cena", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyU6PUdrxwuuK4HW9oSZDgMuURNCIqjQ5SGjukBJWDZMzExkEDbSVa7JLN3nyO6RmtkCu3PaR3sFXlOkaULipP5jdaaLZjAbeiY4wrTNDp0aWL1nSlvSF4UY7_UakOVAAkPMIp1IYp-ISz40BGo5WPXwDk6YsAMFLzYhegyIXVnbkby4l6a6WRkeiYdnpS/s320/164F9C1F-B025-4A2B-B92E-2A10BD0B54A1.jpeg", n:"grupo3", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitzPms6N0pDdICcxnqV208lUs42HZSl88kgdAH2nEtmrsn1wxoOFZEDfcIcvJs8G-bamr_15IlGTTgx0MA-XyGFezjYKvsgZka7L4EWPETBN7yX0xlUhSGM5XppS39tKvlztHdSh0wNuxzAKGvKFKrNzwjhwjpVdP8a5_hXo_IChb7OdeY4tnn0iprHcIE/s320/FF3DCAB1-CD8B-4E86-9D03-F794CD0DC762.jpeg", n:"comida", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitwiyxNUjaVoxKeopuKLFZC9wgASMnmKhJXwcYFfwjON5-Dg7rMKay8ppkseiG5lzGdAsaMetCRUA7ADGtoLEYGMeMUIaT9NpqV3bEnC-q8ChLTi4vps8a9czHVyYpPqTUllfTlnkL0kZRntd1_rzl1JQMDgelCF7CnCqZCKjKJBJBEwKYSokELJXL2Sce/s320/B6D1C336-8721-4BBA-9684-7B047E076A01.jpeg", n:"parque", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgXZQpKrTYJZA-OdSGEOs6JWkahI1MpvFee4El3jek53ta4ouwZfZT4U_gk7lIJ-mQAp8kDSV07DoWJZ-RSFGWCgqWfUgFlNlm9x-O5KKs0PCoapzOeWTpQo-LSBT0jFUoSbOeLjPpEPZkrb7OaZaAAHMZdEJXH5biAJGDBub4FJkilBqPH8e-wpxDs1T93/s320/0578CD01-9888-4FAC-9F6B-D97B76392663.jpeg", n:"tiendas", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHMlYlnHA9wPFqjVDB9bN9UXYZ05IkQhO2MDJpUyUltDw-ScnhgNx3vBdSg1pqiCgQRcL5fJdlXXjqyRNWZCgQlViOhc2Aw_5AlNJaqtZDXerZavpR0iVjD7LwZkME131E56EE5XhI1SvXr7x_fqDcXaPD8-6PBLirvPsK0s1rCskKHlSzsIFK_mH36WDI/s320/0129FB86-649E-453B-9DA7-B45E0CEE2061.jpeg", n:"metro", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjuTsd1Yvz-gwvCpgoOkUEpvAo5PAhGVNFnSV9E1pE6chFJmpFk_R2EtaaiO6bo8NeXkPixmElL5O5Qyusj1-McgCe1msWKR7cbhcASlcVB0zhWr_UUw3DUEZbTlzPSlHDe_qsDvllShr_8YyXw1mvLx256WIxYXBa9p-ciAhARasaBY5s3uG616GwnF5WR/s320/0B80ECBE-803F-44A5-8017-9DF9E108B7C9.jpeg", n:"estacion", d:"1"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiBdgpbkLuVgX0V-xleX-DjnQiNhfrmr9kIsYWRBAQwKirAV1dAMFAnlTJMbVsB3AY3UM5FAM_tKo4GK9QqwF646YiaPgwUtcPxcBQCTFzZIMJQBDeb4nq2gI8xDVlbZ5gfxm8kEqVXqlqpI4zdnQbPP3ajXaYIzLLMLr17ZqHkP6tjQ539AtOePSEaHyK7/s320/9385969C-F471-4E1D-8C0C-787D84CEB3DA.jpeg", n:"museo", d:"1"},
+    
+    // --- DÍA 2 ---
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s320/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg", n:"grupo", d:"2"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiHq4RJ_eOpF-052SB64yrC9yAJAQDcNI6CkXt2rPibzgcO8tanaCh4kKw1cczwSwzevLHAktwlcuOsEyxRprKP42tx-XeXRYPyjZzJpeA81ixd7uCsPjxNuxfVkdhyphenhyphenoXaEO2Sb-ymSJAGB7cj037HFwhf-hVGPooRhAyYggbMUfQ7K6u5Op9NkFEc4ZKuT/s320/291A9BFC-9F71-4837-A686-062E40370F9F.jpeg", n:"comida", d:"2"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgS-HStGYFaCBqgPlKn9iLDbymyxz0M6MLVNDp2xmVzOeNMcue5s-s9sU9virvipvKetfEiSD2PTLBWr8UssKNy6KTnO2ufI9mNKpW5d9ymYWPifGFZ1Fr1hjGvEstM8Sehixg2pUHrphxhKWalrwCfxxGGJSwezhR0lyw59O0MpGqZ6WTFDYoHwagDHEUa/s320/8B3065F2-1A48-483E-B5F7-E35219B3C4CD.jpeg", n:"calle", d:"2"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVmIohySimgYXLE9B963EVTNmFkdq106YYawgbjxhNz6njOY3OTq7c16jQhiZVRSj6oQovCL_8bSYBppe9FxqB2DXrZTEqWHx4SD1d86qPX6gyTFnzH7jnqkn2chf57bdUqflrLdOY3l0rfpjm7b9Gp2wh2zBmTIOciQMa27IHy97eK7DoCWPLJmSoY_Yo/s320/8DA828DF-B986-41FB-87FB-CB8A95F9A411.jpeg", n:"amigos", d:"2"},
+    {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIr7mW69dumeNMmYeT8O2GmoQcPmS8LN1JJnTNeC2mWQDL6uLvb266c1ofj3zIAxNBBpM3VyWgVzbb_G94cU3nbyRwFXz-c7GhVAbT_VEnJvjiG4wdWfVNf8ppBqwib89NMuKXH3NTwwOjTq4tJgISkxazvzPt3hdlc5k8ZIIcdxjlv7J1SVC3MBDHlUtn/s320/426EAA57-7F35-485B-831B-08F4C1E87E12.jpeg", n:"paisaje", d:"2"}
+    // ... puedes seguir añadiendo aquí
 ];
 
 function acceder() {
     if(document.getElementById('pw').value === "Brighton2026") {
         document.getElementById('login').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        render(fotos);
-    } else {
-        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('home').classList.remove('hidden');
     }
 }
 
-function render(lista) {
-    const g = document.getElementById('gal');
-    g.innerHTML = lista.map(f => `
-        <div class="foto-card glass p-3 rounded-3xl" data-n="${f.n}" data-d="${f.d}">
-            <img src="${f.u}" loading="lazy">
-            <div class="p-4 flex justify-between items-center">
-                <span class="text-blue-400 font-bold uppercase text-xs tracking-tighter"># ${f.n}</span>
-                <span class="bg-slate-800 text-[10px] px-2 py-1 rounded-full text-slate-400">Día ${f.d}</span>
+function busquedaRapida() {
+    const val = document.getElementById('busGlobal').value.toLowerCase();
+    const res = document.getElementById('resultadosBusqueda');
+    const grid = document.getElementById('gridBusqueda');
+    const seccionDias = document.getElementById('seccionDias');
+    if(val.length > 0) {
+        seccionDias.classList.add('hidden');
+        res.classList.remove('hidden');
+        const filtradas = fotos.filter(f => f.n.includes(val));
+        grid.innerHTML = filtradas.map(f => cardHTML(f)).join('');
+    } else {
+        seccionDias.classList.remove('hidden');
+        res.classList.add('hidden');
+    }
+}
+
+function verDia(dia) {
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('vistaDia').classList.remove('hidden');
+    document.getElementById('tituloDia').innerText = 'DÍA ' + dia;
+    const filtradas = fotos.filter(f => f.d === dia);
+    document.getElementById('gridFotosDia').innerHTML = filtradas.map(f => cardHTML(f)).join('');
+    window.scrollTo(0,0);
+}
+
+function volverHome() {
+    document.getElementById('vistaDia').classList.add('hidden');
+    document.getElementById('home').classList.remove('hidden');
+}
+
+function cardHTML(f) {
+    return `
+        <div class="glass p-2 rounded-[30px] border-white/5">
+            <img src="${f.u}" class="w-full h-72 object-cover rounded-[24px]" loading="lazy">
+            <div class="p-4 flex justify-between items-center text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                <span># ${f.n}</span>
+                <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full">D1</span>
             </div>
         </div>
-    `).join('');
-}
-
-function filtrarDia(dia) {
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('btn-'+dia).classList.add('active');
-    const filtradas = dia === 'todos' ? fotos : fotos.filter(f => f.d === dia);
-    render(filtradas);
-}
-
-function buscarNombre() {
-    const v = document.getElementById('bus').value.toLowerCase();
-    document.querySelectorAll('.foto-card').forEach(c => {
-        c.style.display = c.dataset.n.includes(v) ? 'block' : 'none';
-    });
+    `;
 }
 </script>
 </body>
