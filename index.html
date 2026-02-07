@@ -3,151 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brighton 2026 | Visual Journey</title>
+    <title>Brighton 2026 | Memoria Visual</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
         
         body { 
-            background-color: #050505;
-            color: #ffffff; 
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            background-color: #f1f5f9; /* Fondo gris muy claro para contraste profesional */
+            color: #1e293b; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Fondo con gradiente sutil para dar profundidad */
-        .bg-gradient-main {
-            background: radial-gradient(circle at 50% -20%, #1e293b 0%, #050505 80%);
+        /* Tarjetas estilo Apple/Moderno */
+        .glass-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
-        /* Tarjetas de los días */
-        .day-card {
-            position: relative;
-            height: 450px;
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.05);
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
-        .day-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-
-        .day-card img {
-            width: 100%;
-            height: 100%;
+        .photo-thumb {
+            aspect-ratio: 1/1;
             object-fit: cover;
-            filter: grayscale(20%) brightness(0.7);
-            transition: all 0.8s ease;
+            border-radius: 16px;
+            transition: transform 0.5s ease;
         }
 
-        .day-card:hover img {
-            filter: grayscale(0%) brightness(0.9);
-            transform: scale(1.05);
+        .day-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: #0f172a;
         }
 
-        /* Grid de fotos estilo portfolio */
-        .photo-item {
-            aspect-ratio: 4/5;
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 10px 24px;
             border-radius: 12px;
-            overflow: hidden;
-            background: #111;
-            transition: transform 0.4s ease;
-        }
-
-        .photo-item:hover {
-            transform: scale(1.02);
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: zoom-in;
-        }
-
-        .btn-back {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
             transition: all 0.3s ease;
         }
 
-        .btn-back:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #3b82f6;
+        .btn-primary:hover {
+            background: #1d4ed8;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
         }
 
         .hidden { display: none !important; }
 
-        /* Scrollbar minimalista */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        /* Estilo para las fotos en el grid */
+        .photo-item {
+            background: white;
+            padding: 12px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
     </style>
 </head>
-<body class="bg-gradient-main min-h-screen antialiased">
+<body class="p-4 md:p-8">
 
-    <header class="container mx-auto px-6 pt-24 pb-16 text-center">
-        <h1 class="text-7xl md:text-8xl font-black tracking-tighter mb-4 italic uppercase">
-            Brighton <span class="text-blue-600">26</span>
-        </h1>
-        <p class="text-slate-500 tracking-[0.6em] text-xs font-bold uppercase mb-8">Edición Coleccionista</p>
-        <div class="w-12 h-1 bg-blue-600 mx-auto rounded-full"></div>
+    <header class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div>
+            <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight">
+                Brighton <span class="text-blue-600">2026</span>
+            </h1>
+            <p class="text-slate-500 mt-2 text-lg">Un viaje inolvidable</p>
+        </div>
+        <div id="nav-controls" class="flex gap-3">
+            <button onclick="volverHome()" id="btn-back" class="hidden px-5 py-2.5 rounded-xl bg-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-300 transition-all">
+                ← VOLVER
+            </button>
+            <button class="btn-primary text-sm">Descargar Todo</button>
+        </div>
     </header>
 
-    <main id="seccionDias" class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 pb-32">
-        </main>
-
-    <section id="vistaDetalle" class="hidden container mx-auto px-6 pb-32">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div>
-                <h2 id="tituloDia" class="text-6xl font-black uppercase italic"></h2>
-                <div class="h-1 w-20 bg-blue-600 mt-4"></div>
+    <main id="seccionDias" class="max-w-6xl mx-auto">
+        <h2 class="text-xl font-bold text-slate-400 uppercase tracking-widest mb-8">Selección de Días</h2>
+        <div id="gridDias" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             </div>
-            <button onclick="volverHome()" class="btn-back px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest">
-                ← Volver al inicio
-            </button>
-        </div>
-        
-        <div id="gridFotos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    </main>
+
+    <section id="vistaDetalle" class="max-w-6xl mx-auto hidden">
+        <h2 id="tituloDia" class="day-title mb-8"></h2>
+        <div id="gridFotos" class="grid grid-cols-2 md:grid-cols-4 gap-6">
             </div>
     </section>
 
-    <div id="lightbox" class="fixed inset-0 bg-black/98 z-50 hidden flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
-        <img id="imgFull" class="max-w-full max-h-[90vh] rounded shadow-2xl transition-all duration-500">
+    <div id="lightbox" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-6" onclick="this.classList.add('hidden')">
+        <img id="imgFull" class="max-w-full max-h-full rounded-3xl shadow-2xl">
     </div>
 
 <script>
-// BASE DE DATOS DE TUS FOTOS
 const fotosRaw = [
     // DÍA 1
     {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhgPo7MxlvkyqvsgOZ5IpASYeT-6FGp5fwILUYS0v1UV5wsnhHSpfBdHmfz4M91PZg7A4FHHGp8M2ip2dslakoA3UsbT5AgtKEiKdJ9XWwRJNHMIvUamQ2Ow7VP8cGrjGY7pyn5ZTAYFKWCVE-Tnb0ZhOO18u8mRWsg8n51uU5z7Dnhz0tWfXZV1cU-ROSI/s1600/33368B7B-1DDE-4744-981A-45DBA1D348F0.jpeg", d:"1"},
     {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhESVJFesVK8dwP6N9VKFcNV4LxIg2GkhbddgVZ3XFHz20TRymkW-FNb1R-bqcnpCjTvJFChAn5GnqBgPBLr0K_YoAW6bUnUQZPq_cQTb2H6qn7NSUxxBTiCP1EXXZ4YdHGZkSCxON7Vw8sZ02Yq47aCcUhUmqJYElFbyBaIeMqi0iEgWkMxdVpMUjxPSJ/s1600/4146D8A4-1025-4805-B02C-D357A62DE0F9.jpeg", d:"1"},
     {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1gx1OCQ5yvq2V5ugEtwj3fF7cE07hVbQps1dDlKACKE_bP7btR5vpMrOMz_6XGG2del5Qnm1vbZh4dQNhFgu4bjyg1qvoZK8SAmsNnEHz2GmdiaSKKP5hx9wgIfhE4oOWRM9tfeaPTI177L2piYlIRQH6Pk8g59nlp9qF-fuBV0YqZP4Nucy_wmi_0qsQ/s1600/FF175960-933A-476C-A98A-34ED15559B37.jpeg", d:"1"},
-    
-    // DÍA 2 (Añadidas del link que pasaste)
+    // DÍA 2
     {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s1600/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg", d:"2"},
     {u:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiHq4RJ_eOpF-052SB64yrC9yAJAQDcNI6CkXt2rPibzgcO8tanaCh4kKw1cczwSwzevLHAktwlcuOsEyxRprKP42tx-XeXRYPyjZzJpeA81ixd7uCsPjxNuxfVkdhyphenhyphenoXaEO2Sb-ymSJAGB7cj037HFwhf-hVGPooRhAyYggbMUfQ7K6u5Op9NkFEc4ZKuT/s1600/291A9BFC-9F71-4837-A686-062E40370F9F.jpeg", d:"2"}
 ];
 
 function renderHome() {
-    const container = document.getElementById('seccionDias');
+    const container = document.getElementById('gridDias');
     const dias = [...new Set(fotosRaw.map(f => f.d))].sort();
     
     container.innerHTML = dias.map(d => {
         const portada = fotosRaw.find(f => f.d === d).u;
         return `
-            <div onclick="verDia('${d}')" class="day-card group">
-                <img src="${portada}" loading="lazy">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent flex flex-col justify-end p-10">
-                    <p class="text-blue-500 font-bold tracking-widest text-xs mb-2 uppercase opacity-0 group-hover:opacity-100 transition-all duration-500">Ver Galería</p>
-                    <h3 class="text-5xl font-black italic uppercase italic tracking-tighter">Día ${d}</h3>
-                </div>
+            <div onclick="verDia('${d}')" class="glass-card p-6 cursor-pointer">
+                <img src="${portada}" class="photo-thumb mb-6 w-full shadow-inner">
+                <h3 class="text-2xl font-bold text-slate-800">DÍA ${d}</h3>
+                <p class="text-slate-400 text-sm mt-1 uppercase font-semibold tracking-wider">Ver álbum completo</p>
             </div>`;
     }).join('');
 }
@@ -155,12 +130,13 @@ function renderHome() {
 function verDia(dia) {
     document.getElementById('seccionDias').classList.add('hidden');
     document.getElementById('vistaDetalle').classList.remove('hidden');
+    document.getElementById('btn-back').classList.remove('hidden');
     document.getElementById('tituloDia').innerText = "Día " + dia;
     
     const grid = document.getElementById('gridFotos');
     grid.innerHTML = fotosRaw.filter(f => f.d === dia).map(f => `
-        <div class="photo-item" onclick="openLightbox('${f.u}')">
-            <img src="${f.u}" loading="lazy">
+        <div class="photo-item cursor-pointer" onclick="openLightbox('${f.u}')">
+            <img src="${f.u}" class="rounded-xl w-full hover:opacity-90 transition-opacity">
         </div>`).join('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -168,7 +144,7 @@ function verDia(dia) {
 function volverHome() {
     document.getElementById('seccionDias').classList.remove('hidden');
     document.getElementById('vistaDetalle').classList.add('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('btn-back').classList.add('hidden');
 }
 
 function openLightbox(url) {
@@ -176,7 +152,6 @@ function openLightbox(url) {
     document.getElementById('lightbox').classList.remove('hidden');
 }
 
-// Inicialización
 renderHome();
 </script>
 </body>
