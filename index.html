@@ -99,9 +99,6 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     Explorar Días
                 </button>
-                <button class="btn-action btn-primary text-sm">
-                  
-                </button>
             </div>
         </div>
     </nav>
@@ -150,24 +147,28 @@
     function renderHome() {
         const container = document.getElementById('gridDias');
         
-        // Verificación de seguridad Senior
         if (typeof fotosRaw === 'undefined') {
-            container.innerHTML = `<p class="text-red-500">Error: No se encontró fotos.js o la variable fotosRaw.</p>`;
+            container.innerHTML = `
+                <div class="col-span-full text-center p-12 bg-red-50 rounded-3xl border border-red-100">
+                    <p class="text-red-600 font-bold">Error: No se detectó 'fotosRaw' en fotos.js</p>
+                    <p class="text-red-400 text-sm">Verifica que el archivo fotos.js exista y la variable esté bien escrita.</p>
+                </div>`;
             return;
         }
 
-        // Obtener días únicos y ordenarlos numéricamente
-        const dias = [...new Set(fotosRaw.map(f => f.d))].sort((a, b) => parseInt(a) - parseInt(b));
+        // Obtener días únicos convirtiendo a número para ordenar correctamente
+        const dias = [...new Set(fotosRaw.map(f => f.d))].sort((a, b) => Number(a) - Number(b));
         
         container.innerHTML = dias.map((d, index) => {
-            const primerFoto = fotosRaw.find(f => f.d === d).u;
-            const count = fotosRaw.filter(f => f.d === d).length;
+            const fotosDelDia = fotosRaw.filter(f => f.d == d);
+            const primerFoto = fotosDelDia[0].u;
+            const count = fotosDelDia.length;
             const diaFormateado = d.toString().padStart(2, '0');
 
             return `
                 <div onclick="verDia('${d}')" class="card-premium p-4 cursor-pointer animate-fade-in" style="animation-delay: ${index * 0.1}s">
                     <div class="img-reveal aspect-[4/5] mb-6">
-                        <img src="${primerFoto}" loading="lazy" class="w-full h-full object-cover">
+                        <img src="${primerFoto}" loading="lazy" class="w-full h-full object-cover" alt="Día ${d}">
                         <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow-sm">
                             <span class="text-xs font-bold text-slate-800">${count} fotos</span>
                         </div>
@@ -193,7 +194,8 @@
         document.getElementById('tituloDia').innerText = "Día " + dia.toString().padStart(2, '0');
         
         const grid = document.getElementById('gridFotos');
-        grid.innerHTML = fotosRaw.filter(f => f.d === dia).map((f, i) => `
+        // Usamos == para comparar string con número si fuera necesario
+        grid.innerHTML = fotosRaw.filter(f => f.d == dia).map((f, i) => `
             <div class="card-premium p-2 cursor-pointer animate-fade-in" style="animation-delay: ${i * 0.05}s" onclick="openLightbox('${f.u}')">
                 <div class="img-reveal aspect-square">
                     <img src="${f.u}" loading="lazy" class="w-full h-full object-cover">
