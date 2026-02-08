@@ -306,4 +306,15 @@ const fotosDia5 = [
   {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhD8539llzbiEicWZTlzzsDPxCESuFsgoI7YduCljwIsJmFMKOfptxnV45tT2aciFapu7u8UXfTGS-tFu-oZ0PPrbhvabwNzbP8yPufbuqXjttnRkPZdI_s-dCsJWAXZXKPv2wx_LLu10O9OwtwhkwGxq-rlBsC_3uRhLzggPhtlyzxoZtx5FKdkO6eM23B/s320/IMG_2984.jpeg", d: "5"}
 ];
 
-const fotosRaw = [...fotosDia1, ...fotosDia2, ...fotosDia3, ...fotosDia4, ...fotosDia5];
+// Asegúrate de que todas las variables existan, aunque estén vacías, para que no se rompa
+const f1 = (typeof fotosDia1 !== 'undefined') ? fotosDia1 : [];
+const f2 = (typeof fotosDia2 !== 'undefined') ? fotosDia2 : [];
+const f3 = (typeof fotosDia3 !== 'undefined') ? fotosDia3 : [];
+const f4 = (typeof fotosDia4 !== 'undefined') ? fotosDia4 : [];
+const f5 = (typeof fotosDia5 !== 'undefined') ? fotosDia5 : [];
+
+// Unimos todas de forma segura
+const fotosRaw = [...f1, ...f2, ...f3, ...f4, ...f5];
+
+// Esto imprimirá en la consola si funcionó
+console.log("Total de fotos cargadas:", fotosRaw.length);
