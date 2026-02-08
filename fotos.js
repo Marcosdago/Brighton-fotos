@@ -176,6 +176,7 @@ const fotosDia3 = [
   {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgxgJRWpKLtPb7RM_dgReZm3iByV1nhslg9I427vmrF5bMXU_5JHaZjfScc0hP99rPU-w-6R8PEeUDHzclhFAHwkN05HzTZrMB4EiXs6WbkYP9fDT7sXPV8bCOqC_0dRhoYoLpmelzTS6xNGd4Ht4HFdDH4CBbEVm-jCfaPS_4NA5iS0MqUBfDnj8HHkhR7/s1600/DF29F3F4-D9B2-4103-8D98-0AB48A5A1353.jpeg", d: "3"},
   {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIKF235aqIZbhwAyxH-pq6GHJmldj1a-zpglYLClYoS_eeL7gTb5sv3fEXF9qXwR_IfPfPNRpAaVWiJK5LJzg99howspB4N11zCbIZ7CNnnRNwMXgaPLLpQ40uwzsFKbt2KKXryjHgyVUnFJcb3askL9UASxXfWnLggtvbu6m-Vy3akGLyx9Tb6Sm6geIk/s1600/47A22794-531F-44EC-A052-F222F87C8DB4.jpeg", d: "3"}
 ];
+
 const fotosDia4 = [
 {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWixaWo1bb-NCynHUyBu3_A0Bu0aT1pYsWVIMseWm_4Ca0KQge0TmjMsuWK5TtNkflYpPbCCP8SWAOETWwM6vMcsnLohA_GeP5uGcoqmAVZrZfgTSWHEAZs0grEgc2fEMIh113wEK12GWcRzsfqp7lRx4_xfIU3-a_7yeVShtJu_1GXuNKxmHLo57ISVR-/s320/7586EC6D-5849-4B8A-B737-2CD34A6B5B6B.jpeg", d: "4"},
 {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiM0lXkemHSK9WzHOpWI7ND8sc0ko8OR-4dY_8kRPTBve2x-buDBKXsI1HHBm6hId13hEzE87rsfaaoWgVFxoJrOU4vwtt4AgN5dqY40xc-yp58JE5ZIKYXTip6M2nma5oVzijiI4fxR5PIiu3ziAaD-7hAdvg2I_rg1WSlslL0gMdgfUcO_5j6WAU011zz/s320/34A446CA-F283-499A-AB66-0182A27F1C41.jpeg", d: "4"},
