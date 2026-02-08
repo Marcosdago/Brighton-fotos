@@ -42,8 +42,7 @@ const fotosDia1 = [
     {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjT9W3ntSe0bCNgAo7TgQSB6W0mKNZjCC2SfMSgQ6CnY0fjladOX6Hdo26BgBM5p1LJi8FsXEWdn53Dp3HiLJHk2IIrEwVGIZ7_awU8uPgELEJ17arjW3ExyB9WmBZmd19YkcjWBrfq9wbP4GDDQMAtahyphenhyphenMAXRt-2us1BIbenh8-8qkyjRZQO8AEmolMvZn/s320/PHOTO-2025-02-04-15-39-04%202.jpeg", d: "1"},
     {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj6N58KfQdJLVUP2S5TxDXvTvou_V8w4KCR6nTyjc_2fQQPLh6ZCAgFHbam-TNd1nVPncE4-2Ayd8MdO-pNb57rz391w0NYkn8xtt8bRLkBgnZQY7vvduSle8xtm7QLTMVzcxMS3uOnFhWaHwjaL1EhMCIIsruq6aoId2aBSJ8IoJV_JfDWhxSgPO3k83Vv/s320/PHOTO-2025-02-04-15-39-05.jpeg", d: "1"},
     {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi5FtJ5auYst5jwJDibz_d2QZ4_8mkyAAPUUXWZeC_pUdk2_7rW_3HMfcrSuQFjoLQ7tziuO1_RnK9kv7lG_CFiSC_s1_x7E-J5Rn1OVNZIvruHa1ZJjAighRACcTeirqb9bmTQqXIAo0P5VObJHMbrwC64nee1am8D8SL2ptfM8V-qVD-Zkw_vEeSwuItG/s320/PHOTO-2025-02-04-15-39-05%202.jpeg", d: "1"}
-   
-];
+   ];
 
 const fotosDia2 = [
     {u: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6h6_2kWoZl-3MPxU4qQpBClTrj5WWVeTZvOKnE8vYZHgug1shzxmadL5g0_Zn8hHuqMAGkDBr0RfCZyv1yMEp19OvsKX7-tf76pVfxZs5Ov4EV_aOHsw_X3ds95lv91CjukUYs8TzDXK8HGyH2H5fXZyjM7YAirKMyK-l2UG1_vu6HTNhqriAYL6Ucca/s320/6B34487B-3A65-4655-9E19-FD0688AF58FF.jpeg", d: "2"},
